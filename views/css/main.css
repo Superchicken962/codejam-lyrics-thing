@@ -1,0 +1,100 @@
+body {
+    background-color: rgb(25,25,25);
+    color: white;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.main {
+    display: block;
+    margin: auto;
+    position: absolute;
+    top:0;right:0;left:0;bottom:0;
+    width: fit-content;
+    height: fit-content;
+    min-width: 700px;
+    background-color: rgb(15,15,15);
+    border-radius: 15px;
+    overflow: hidden;
+}
+.main h1 {
+    margin-left: 25px;
+}
+@media screen and (max-width: 700px) {
+    .main {
+        min-width: 250px;
+    }
+}
+
+a.use_voice {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: auto;
+    width: 40px;
+    height: 40px;
+    background-color: orange;
+    border-radius: 50%;
+    font-size: 18px;
+    transition: 0.3s ease-in-out background-color;
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+a.use_voice:hover {
+    background-color: rgb(255,120,0);
+    cursor: pointer;
+}
+
+.lyrics_input {
+    display: block;
+    margin: auto;
+    background: none;
+    color: white;
+    width: 90%;
+    height: 150px;
+    resize: none;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 24px;
+    outline: none;
+    background-color: rgb(22, 79, 184, 0.5);
+    border: none;
+    padding: 8px;
+}
+
+.search_button {
+    display: block;
+    margin: auto;
+    width: 100%;
+    padding: 5px 0;
+    background-color: rgb(29, 111, 165);
+    text-align: center;
+}
+.search_button:hover {
+    cursor: pointer;
+}
+
+.errorBox {
+    display: block;
+    margin: auto;
+    position: absolute;
+    top:0;right:0;left:0;bottom:0;
+    height: fit-content;
+    width: fit-content;
+    background-color: rgba(200,0,0,0.6);
+    border: 4px solid red;
+    border-radius: 15px;
+    padding: 4px 16px;
+    min-height: 150px;
+}
+.errorBox .dismiss_btn {
+    display: block;
+    margin: auto;
+    text-align: center;
+    width: 100%;
+}
+.errorBox .dismiss_btn:hover {
+    text-decoration: underline;
+    cursor: pointer;
+}
+.errorBox .specific_error {
+    color: grey;
+}
