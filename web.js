@@ -27,8 +27,6 @@ app.get("/search/lyrics", (req, res) => {
 
 app.post("/search/lyrics", (req, res) => {
     res.status(200).json({});
-
-
 });
 
 
@@ -66,6 +64,10 @@ app.get(["/js/*", "/css/*", "/assets/*"], (req, res, next) => {
     
     res.sendFile(filePath);
 });
+
+if (!process.env.LYRICS_API_KEY) {
+    throw new Error("Missing API Key! Must be added to .env with key 'LYRICS_API_KEY'!");
+}
 
 app.listen(PORT, () => {
     console.log(`Listening on port ${PORT}!`);
