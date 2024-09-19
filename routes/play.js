@@ -19,6 +19,10 @@ router.get("/multiplayer", (req, res) => {
     res.render("routes/play/multiplayer.ejs")
 });
 
+router.get("/multiplayer/new", (req, res) => {
+    res.render("routes/play/multiplayer.ejs")
+});
+
 // Sample data.
 const servers = [
     {

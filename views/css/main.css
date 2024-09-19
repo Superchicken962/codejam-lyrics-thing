@@ -188,3 +188,15 @@ a.join_server:hover {
     background-color: rgba(0,140,0, 0.5);
     cursor: pointer;
 }
+
+.text_hint_link {
+    display: block;
+    margin: auto;
+    width: fit-content;
+    color: rgb(38, 155, 201);
+    text-decoration: none;
+}
+.text_hint_link:hover {
+    text-decoration: underline;
+    cursor: pointer;
+}
