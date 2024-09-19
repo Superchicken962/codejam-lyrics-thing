@@ -30,9 +30,16 @@ module.exports = {
     /**
      * Send data to socket and await the response.
      * @param { Object } data - Data to send to socket.
+     * @param { string } data.message - Event name to send to socket.
      */
     ask: function(data) {
         if (!initialised) throw new Error("Cannot ask socket when it has not been initialised!");
+
+        // If message is given as a string, convert it to object.
+        if (typeof data !== "object") {
+            let val = data;
+            data = {message: val}
+        }
 
         return new Promise((resolve) => {
             // If id is not given, generate a random one.

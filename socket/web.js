@@ -1,4 +1,5 @@
 const { Namespace } = require("socket.io");
+const { Servers } = require("./data");
 
 /**
  * @param { Namespace } io 
@@ -12,9 +13,9 @@ module.exports = function(io) {
             }
 
             switch(data.message) {
-                case "test":
+                case "servers.getall":
                     reply({
-                        "message": "HI"
+                        "servers": Servers
                     });
                     break;
             }

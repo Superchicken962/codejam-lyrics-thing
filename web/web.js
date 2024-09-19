@@ -29,10 +29,6 @@ app.use(session({
     resave: false
 }));
 
-// Initialise the webSocket that will communicate to the socket through the web namespace.
-const webSocket = require("./socketCommuncation");
-webSocket.init("web");
-
 
 app.use("*", (req, res, next) => {
     app.locals.session = req.session;
@@ -60,6 +56,7 @@ app.get("/search/lyrics", (req, res) => {
     res.render("search_lyrics.ejs");
 });
 
+// TODO: Check country restrictions if going ahead/staying with this API.
 app.post("/search/lyrics", async(req, res) => {
     const { lyrics } = req.body;
 
