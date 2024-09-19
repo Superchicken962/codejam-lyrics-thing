@@ -1,3 +1,7 @@
+// ----------------------------
+// Wrapper for Musixmatch API
+// ----------------------------
+
 const baseURL = "https://api.musixmatch.com/ws/1.1/";
 require("dotenv").config();
 

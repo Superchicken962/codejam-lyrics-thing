@@ -8,10 +8,13 @@ const bodyParser = require("body-parser");
 const app = express();
 const path = require("node:path");
 const fs = require("node:fs");
-const PORT = 3080;
+const config = require("./config.json");
+const PORT = config.websitePort || 3000;
 require("dotenv").config();
 
 const musixmatch = require("./apis/musixmatch");
+const { SessionTokens } = require("./storage");
+const { generateRandomCode } = require("./utility");
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -26,11 +29,21 @@ app.use(session({
 
 app.use("*", (req, res, next) => {
     app.locals.session = req.session;
+
+    // If hostname is 'localhost', then redirect to "127.0.0.1"
+    if (req.hostname === "localhost") {
+        res.redirect(`${req.protocol}://127.0.0.1:${PORT}${req.originalUrl}`);
+        return;
+    };
     
+    // Assign session token to user if they don't have one.
+    if (!SessionTokens.get(req.sessionID)) SessionTokens.set(req.sessionID, generateRandomCode(16));
+
     next();
 });
 
 app.use("/play", require("./routes/play"));
+app.use("/spotify", require("./routes/spotify"));
 
 app.get("/", (req, res) => {
     res.render("index.ejs");
@@ -90,8 +103,15 @@ app.get(["/js/*", "/css/*", "/assets/*"], (req, res, next) => {
     res.sendFile(filePath);
 });
 
+// Ensure that the secrets/api keys have been set.
 if (!process.env.LYRICS_API_KEY) {
-    throw new Error("Missing API Key! Must be added to .env with key 'LYRICS_API_KEY'!");
+    throw new Error("Missing Musixmatch API Key! Must be added to .env with key 'LYRICS_API_KEY'!");
+}
+if (!process.env.SPOTIFY_API_CLIENT_SECRET) {
+    throw new Error("Missing Spotify API Client Secret! Must be added to .env with key 'SPOTIFY_API_CLIENT_SECRET'!");
+}
+if (!process.env.SPOTIFY_API_CLIENT_ID) {
+    throw new Error("Missing Spotify API Client Id! Must be added to .env with key 'SPOTIFY_API_CLIENT_ID'!");
 }
 
 app.listen(PORT, () => {
