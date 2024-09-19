@@ -1,5 +1,5 @@
-const Games = [];
+const Servers = [];
 
 module.exports = {
-    Games
+    Servers
 };

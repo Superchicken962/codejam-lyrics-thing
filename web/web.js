@@ -29,6 +29,11 @@ app.use(session({
     resave: false
 }));
 
+// Initialise the webSocket that will communicate to the socket through the web namespace.
+const webSocket = require("./socketCommuncation");
+webSocket.init("web");
+
+
 app.use("*", (req, res, next) => {
     app.locals.session = req.session;
 

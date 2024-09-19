@@ -4,5 +4,6 @@
         "scope": "user-read-private user-read-email user-read-playback-state"
     },
     "websitePort": 3080,
-    "socketPort": 3081
+    "socketPort": 3081,
+    "socketAddress": "http://localhost:3081/"
 }
