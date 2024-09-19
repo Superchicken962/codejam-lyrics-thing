@@ -42,6 +42,7 @@ body {
 .main .menu_button:hover {
     background-color: rgba(55, 216, 55, 0.6);
     border: 3px solid lime;
+    cursor: pointer;
 }
 
 a.use_voice {
@@ -139,5 +140,51 @@ a.use_voice:hover {
 .login_prompt .spotify_login_btn:hover {
     background-color: rgba(0,200,0, 0.5);
     border: 2px solid rgb(0, 180, 0);
+    cursor: pointer;
+}
+
+.multiplayer_servers {
+    display: block;
+    margin: auto;
+    width: 90%;
+}
+.multiplayer_servers .server {
+    display: block;
+    margin: auto;
+    background-color: rgba(22, 101, 155, 0.5);
+    border-left: 4px solid rgb(22,101,155);
+    padding: 1px 8px;
+    margin-bottom: 5px;
+    /* transition: 0.3s ease-in-out border, 0.3s ease-in-out background-color; */
+}
+.multiplayer_servers .server:hover {
+    background-color: rgba(25, 141, 218, 0.5);
+    border-left: 4px solid rgb(25, 141, 218);
+    cursor: pointer;
+}
+.viewServerInfo .server_info {
+    display: block;
+    position: relative;
+    margin: auto;
+    width: 90%;
+    background-color: rgba(22, 101, 155, 0.5);
+    border-left: 4px solid rgb(22,101,155);
+    padding: 1px 8px;
+    margin-bottom: 15px;
+}
+a.join_server {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: auto;
+    position: absolute;
+    right:0;top:0;bottom:0;
+    width: fit-content;
+    padding: 2px 8px;
+    background-color: rgba(0,180,0, 0.5);
+    width: 20%;
+}
+a.join_server:hover {
+    background-color: rgba(0,140,0, 0.5);
     cursor: pointer;
 }
