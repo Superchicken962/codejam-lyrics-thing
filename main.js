@@ -35,3 +35,6 @@ class FriendlyProcess {
 
 const webProcess = new FriendlyProcess("Web", exec("node web.js"));
 webProcess.init();
+
+const socketServer = new FriendlyProcess("Socket", exec("node socket/socket.js"));
+socketServer.init();

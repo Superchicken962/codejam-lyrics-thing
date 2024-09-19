@@ -6,7 +6,13 @@ useVoiceButton.addEventListener("click", () => {
 async function searchLyrics() {
     let results;
 
-    const search = await fetch("/search/lyrics", {"method": "POST"});
+    // Set the content type so it can be read in the backend.
+    const headers = {"Content-type": "application/json"};
+    const body = {
+        "lyrics": document.querySelector("textarea.lyrics_input")?.value || "0"
+    };
+
+    const search = await fetch("/search/lyrics", {"method": "POST", "headers": headers, "body": JSON.stringify(body)});
 
     if (!search.ok) {
         new ErrorBox("Error Searching!", "There was an error searching for your song!", 500, search.statusText);
@@ -20,6 +26,7 @@ async function searchLyrics() {
         return;
     }
 
+    console.log(results);
 }
 
 const searchBtn = document.querySelector(".search_button");

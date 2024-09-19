@@ -25,6 +25,25 @@ body {
     }
 }
 
+.main .menu_button {
+    display: block;
+    margin: auto;
+    width: 80%;
+    padding: 8px;
+    margin-bottom: 10px;
+    background-color: rgba(42, 155, 42, 0.6);
+    border: 3px solid green;
+    border-radius: 5px;
+    text-decoration: none;
+    color: white;
+    text-align: center;
+    transition: 0.3s ease-in-out background-color, 0.3s ease-in-out border;
+}
+.main .menu_button:hover {
+    background-color: rgba(55, 216, 55, 0.6);
+    border: 3px solid lime;
+}
+
 a.use_voice {
     display: flex;
     justify-content: center;
@@ -97,4 +116,28 @@ a.use_voice:hover {
 }
 .errorBox .specific_error {
     color: grey;
+}
+
+.login_prompt {
+    display: block;
+    margin: auto;
+    width: fit-content;
+    margin-bottom: 15px;
+}
+.login_prompt .spotify_login_btn {
+    display: block;
+    margin: auto;
+    background-color: rgba(0,128,0, 0.5);
+    border: 2px solid green;
+    border-radius: 5px;
+    width: fit-content;
+    padding: 2px 16px;
+    text-decoration: none;
+    color: white;
+    transition: 0.3s ease-in-out background-color, 0.3s ease-in-out border;
+}
+.login_prompt .spotify_login_btn:hover {
+    background-color: rgba(0,200,0, 0.5);
+    border: 2px solid rgb(0, 180, 0);
+    cursor: pointer;
 }

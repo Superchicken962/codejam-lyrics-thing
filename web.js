@@ -3,6 +3,7 @@
 // ----------------------------------------------------
 
 const express = require("express");
+const session = require("express-session");
 const bodyParser = require("body-parser");
 const app = express();
 const path = require("node:path");
@@ -10,23 +11,47 @@ const fs = require("node:fs");
 const PORT = 3080;
 require("dotenv").config();
 
+const musixmatch = require("./apis/musixmatch");
+
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.engine("html", require('ejs').renderFile);
 app.set("view-engine", "html");
 
+app.use(session({
+    secret: "sQMsmaxnCLK2jsLKA02S1AS&!!",
+    saveUninitialized: true,
+    resave: false
+}));
+
+app.use("*", (req, res, next) => {
+    app.locals.session = req.session;
+    
+    next();
+});
+
+app.use("/play", require("./routes/play"));
 
 app.get("/", (req, res) => {
-    res.redirect("/search/lyrics");
-    // res.render("index.ejs");
+    res.render("index.ejs");
 });
 
 app.get("/search/lyrics", (req, res) => {
     res.render("search_lyrics.ejs");
 });
 
-app.post("/search/lyrics", (req, res) => {
-    res.status(200).json({});
+app.post("/search/lyrics", async(req, res) => {
+    const { lyrics } = req.body;
+
+    const findLyrics = await musixmatch.get("track.search", [
+        {"name": "q_lyrics", "value": lyrics}
+    ]);
+
+    const lyricsData = await findLyrics.json();
+
+    // console.log(lyricsData.message.body.track_list);
+
+    res.status(200).json(lyricsData?.message?.body);
 });
 
 
