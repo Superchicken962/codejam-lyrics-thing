@@ -59,14 +59,14 @@ app.post("/search/lyrics", async(req, res) => {
     const { lyrics } = req.body;
 
     const findLyrics = await musixmatch.get("track.search", [
-        {"name": "q_lyrics", "value": lyrics}
+        {"name": "q_lyrics", "value": lyrics},
+        {"name": "page_size", "value": 15},
+        {"name": "a_track_rating", "value": "desc"}
     ]);
 
     const lyricsData = await findLyrics.json();
 
-    // console.log(lyricsData.message.body.track_list);
-
-    res.status(200).json(lyricsData?.message?.body);
+    res.status(200).json({totalFound: lyricsData.message?.header?.available, trackList: lyricsData?.message?.body?.track_list});
 });
 
 

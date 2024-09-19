@@ -16,7 +16,11 @@ body {
     border-radius: 15px;
     overflow: hidden;
 }
-.main h1 {
+.main.relative {
+    position: relative;
+    margin-top: 25px;
+}
+.main h1, .main h2 {
     margin-left: 25px;
 }
 @media screen and (max-width: 700px) {
@@ -90,6 +94,19 @@ a.use_voice:hover {
 }
 .search_button:hover {
     cursor: pointer;
+}
+
+.results_box {
+    display: none;
+}
+.results_box.visible {
+    display: block;
+}
+.results_box .lyrics_results {
+    display: block;
+    margin: auto;
+    width: 90%;
+    margin-bottom: 15px;
 }
 
 .errorBox {

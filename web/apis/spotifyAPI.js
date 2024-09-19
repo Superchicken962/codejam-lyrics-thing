@@ -27,8 +27,6 @@ const SpotifyAPI = {
         // Add the auth header if a token is given.
         if (accessToken) headers["Authorization"] = "Bearer " + accessToken;
 
-        console.log(headers);
-
         return fetch(url, {"method": "GET", headers}).then(resp => resp.json());
     }
 };

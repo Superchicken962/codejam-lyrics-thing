@@ -69,7 +69,6 @@ router.get("/auth", async(req, res) => {
         return;
     }
 
-    // TODO: Add method to get from spotify API.
     const userAccountInfo = await SpotifyAPI.GET("/me", "v1", response.access_token);
 
     const userInfo = {
