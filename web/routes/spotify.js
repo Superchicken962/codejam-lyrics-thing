@@ -1,8 +1,8 @@
 const express = require("express");
 const router = express.Router();
-const config = require("../config.json");
+const config = require("../../config.json");
 const { SessionTokens } = require("../storage");
-const { generateRandomCode } = require("../utility");
+const { generateRandomCode } = require("../../utility");
 const SpotifyAPI = require("../apis/spotifyAPI");
 require("dotenv").config();
 const QueryString = require("qs");

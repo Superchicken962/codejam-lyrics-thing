@@ -8,18 +8,20 @@ const bodyParser = require("body-parser");
 const app = express();
 const path = require("node:path");
 const fs = require("node:fs");
-const config = require("./config.json");
+const config = require("../config.json");
 const PORT = config.websitePort || 3000;
 require("dotenv").config();
 
 const musixmatch = require("./apis/musixmatch");
 const { SessionTokens } = require("./storage");
-const { generateRandomCode } = require("./utility");
+const { generateRandomCode } = require("../utility");
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.engine("html", require('ejs').renderFile);
 app.set("view-engine", "html");
+
+app.set("views", path.join(__dirname, "/views"));
 
 app.use(session({
     secret: "sQMsmaxnCLK2jsLKA02S1AS&!!",
