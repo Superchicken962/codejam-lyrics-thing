@@ -6,4 +6,7 @@
 Run `node main.js` to start all processes.
 
 > [!NOTE]
-> You must include an API key for musixmatch in an .env file with the key `LYRICS_API_KEY`.
+> You must include some secrets in an .env file:
+> - Musixmatch API key: `LYRICS_API_KEY`
+> - Spotify API Client ID: `SPOTIFY_API_CLIENT_ID`
+> - Spotify API Client Secret: `a5b9e62f60434ac3a56f671f6e73bbd1`
