@@ -9,5 +9,26 @@
     "path": "^0.12.7",
     "socket.io": "^4.7.5",
     "socket.io-client": "^4.7.5"
-  }
+  },
+  "name": "codejam-lyrics-thing",
+  "description": "> [!IMPORTANT]  \r > Requires Node.js (atleast v20.9.0) to run",
+  "version": "0.0.1",
+  "main": "main.js",
+  "devDependencies": {},
+  "scripts": {
+    "test": "node main.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Superchicken962/codejam-lyrics-thing.git"
+  },
+  "keywords": [
+    "lyrics"
+  ],
+  "author": "mark gurney",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Superchicken962/codejam-lyrics-thing/issues"
+  },
+  "homepage": "https://github.com/Superchicken962/codejam-lyrics-thing#readme"
 }

@@ -1,9 +1,10 @@
 const express = require("express");
 const errors = require("../errors");
+const { requireLoggedInAPI } = require("../middlewares");
 const router = express.Router();
 const webSocket = require("../sockets").web;
 
-router.use("*", (req, res, next) => {
+router.get("*", (req, res, next) => {
     if (!req.session.isLoggedIn) {
         res.render("login_prompt.ejs");
         return;
@@ -24,7 +25,7 @@ router.get("/multiplayer/new", (req, res) => {
     res.render("routes/play/create_server.ejs")
 });
 
-router.post("/multiplayer/new", (req, res) => {
+router.post("/multiplayer/new", requireLoggedInAPI, (req, res) => {
     const { name, description, maxPlayers } = req.body;
 
     const noValue = (!name || !description || !maxPlayers);
@@ -35,7 +36,23 @@ router.post("/multiplayer/new", (req, res) => {
         return;
     }
 
-    res.status(200).send("Hey");
+    webSocket.ask("server.new", {
+        server: {
+            name, description, maxPlayers
+        },
+        owner: {
+            username: req.session.user?.account?.username,
+            id: req.session.user?.account?.id
+        }
+    }).then(resp => {
+        
+        if (resp.success) {
+            res.status(200).json({});
+        } else {
+            res.status(500).json(errors.api.buildError(500, "Error Creating Server", resp.reason));
+        }
+
+    });
 });
 
 router.get("/get/servers", (req, res) => {
