@@ -24,6 +24,10 @@ router.get("/multiplayer/new", (req, res) => {
     res.render("routes/play/create_server.ejs")
 });
 
+router.post("/multiplayer/new", (req, res) => {
+    res.status(200).send("Hey");
+});
+
 router.get("/get/servers", (req, res) => {
     webSocket.ask("servers.getall").then(response => {
         res.status(200).json(response.servers);

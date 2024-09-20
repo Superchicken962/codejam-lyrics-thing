@@ -7,12 +7,16 @@ class ErrorBox {
      * @param { string } specificError - The specific error message to show (leave as null to not show anything).
      * @param { number } hideAfter - Miliseconds to wait before hiding error after showing.
      * @param { bool } hideOnCreate - Should the error be hidden when created? (def = false)
+     * @param { bool } noTransparency - Should the background colour of the box not have transparency? (def = false)
+     * @param { Element } parentElement - If provided, the box will append to this element instead of the document body.
      */
-    constructor(name, description, code, specificError, hideAfter = 5000, hideOnCreate = false) {
+    constructor(name, description, code, specificError, hideAfter = 5000, hideOnCreate = false, noTransparency = false, parentElement) {
         this.name = name;
         this.description = description;
         this.code = code;
         this.specificError = specificError;
+        this.noTransparency = noTransparency;
+        this.parentElement = parentElement;
 
         this.hideAfter = hideAfter;
         this.hideTimer = null;
@@ -30,6 +34,8 @@ class ErrorBox {
         // Set element to errorBox element if it exists in document, or create a div if not.
         this.element = document.querySelector(".errorBox") || document.createElement("div");
         this.element.className = "errorBox";
+
+        this.element.style.backgroundColor = this.noTransparency ? "rgb(120,0,0)" : "rgba(200,0,0,0.6)";
     }
 
     /**
@@ -44,7 +50,13 @@ class ErrorBox {
         
         // Append to body if it is not on the page.
         if (!this.existsOnPage()) {
-            document.body.appendChild(this.element);
+            // Append to given parentElement if it is of type 'Element'.
+            if (this.parentElement && this.parentElement instanceof Element) {
+                this.parentElement.appendChild(this.element);
+                return;
+            }
+            
+            document.body.appendChild(this.element);                
         }
         
         this.element.innerHTML = `

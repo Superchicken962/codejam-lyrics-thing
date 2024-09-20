@@ -12,20 +12,21 @@
         <h1>Lyrics Quiz - Multiplayer</h1>
         <h2>Create Server</h2>
 
-        <div class="new_server_form">
-            <span><label for="server_name">Server Name</label><br><textarea id="server_name" class="server_name" placeholder="Name..." maxlength="75"></textarea></span>
-            <span><label for="server_description">Server Description</label><br><textarea id="server_description" class="server_description" placeholder="Description..." maxlength="120"></textarea></span>
-            <span><label for="max_players">Max Players</label><br><input id="max_players" class="max_players" type="number" min="2" max="8" value="2"/></span>
+        <form class="new_server_form">
+            <span><label for="server_name">Server Name</label><br><textarea id="server_name" class="server_name" placeholder="Name..." maxlength="75" required></textarea></span>
+            <span><label for="server_description">Server Description</label><br><textarea id="server_description" class="server_description" placeholder="Description..." maxlength="120" required></textarea></span>
+            <span><label for="max_players">Max Players</label><br><input id="max_players" class="max_players" type="number" min="2" max="8" value="2" required/></span>
 
             <br>
 
-            <span><a class="text_hint_link create_server_btn">Create</a></span>
-        </div>
+            <span><input class="text_hint_link create_server_btn" type="submit" value="Create"></span>
+        </form>
         
         <p>
             <a class="text_hint_link" href="/play/multiplayer">Cancel</a>
         </p>
     </div>
 </body>
+<script src="/js/errorBox"></script>
 <script src="/js/pages/play/createServer"></script>
 </html>
