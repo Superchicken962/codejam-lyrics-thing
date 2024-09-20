@@ -25,6 +25,16 @@ router.get("/multiplayer/new", (req, res) => {
 });
 
 router.post("/multiplayer/new", (req, res) => {
+    const { name, description, maxPlayers } = req.body;
+
+    const noValue = (!name || !description || !maxPlayers);
+    const outOfRange = (name?.length > 75 || description?.length > 120 || !(maxPlayers >= 2 && maxPlayers <= 8))
+
+    if (noValue || outOfRange) {
+        res.status(400).json(errors.api.buildError(400, "Bad Request", "Invalid fields given!"));
+        return;
+    }
+
     res.status(200).send("Hey");
 });
 

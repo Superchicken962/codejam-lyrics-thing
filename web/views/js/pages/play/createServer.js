@@ -8,7 +8,7 @@ createServerForm.addEventListener("submit", async function(ev) {
     const serverDesc = createServerForm.querySelector("#server_description")?.value;
     const maxPlayers = createServerForm.querySelector("#max_players")?.value;
 
-    // Input validation - cannot fully trust frontend.
+    // Input validation - because form can be edited.
     const noValue = (!serverName || !serverDesc || !maxPlayers);
     const outOfRange = (serverName.length > 75 || serverDesc.length > 120 || !(maxPlayers >= 2 && maxPlayers <= 8))
 
@@ -25,11 +25,13 @@ createServerForm.addEventListener("submit", async function(ev) {
         "maxPlayers": maxPlayers
     };
 
-    const requestCreation = await fetch("/multiplayer/new", {"method": "POST", headers, body: JSON.stringify(body)});
+    const requestCreation = await fetch("/play/multiplayer/new", {"method": "POST", headers, body: JSON.stringify(body)});
+    const responseData = await requestCreation.json();
 
     // Display error if the fetch did not respond with a status of 200.
     if (!requestCreation.ok) {
-        new ErrorBox("Error Creating Server!", "We were unable to create your server, please try again later!", requestCreation.status, null, 8000, false, true);
+        const errorMsg = responseData.message || "We were unable to create your server, please try again later!";
+        new ErrorBox("Error Creating Server!", errorMsg, requestCreation.status, null, 8000, false, true);
         return;
     }
 
