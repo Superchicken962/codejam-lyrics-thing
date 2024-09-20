@@ -50,6 +50,7 @@ async function viewServer(id) {
     const isInServer = server.players.find(player => player.id === CURRENT_USER_ID);
 
     const serverInfo = viewServerInfo.querySelector(".server_info");
+    // TODO: Add href to "goto server" button that takes you to the game/lobby - needs route to be created in backend.
     serverInfo.innerHTML = `
         <h2>${server.name}</h2>
         <p>
@@ -81,4 +82,7 @@ async function joinServer(id) {
         new ErrorBox(joinResponse.name, joinResponse.message, joinResponse.code, null, 8000);
         return;
     }
+
+    // Refresh/reload server info to show that we have joined the server.
+    viewServer(id);
 }
