@@ -21,7 +21,7 @@ router.get("/multiplayer", (req, res) => {
 });
 
 router.get("/multiplayer/new", (req, res) => {
-    res.render("routes/play/multiplayer.ejs")
+    res.render("routes/play/create_server.ejs")
 });
 
 router.get("/get/servers", (req, res) => {
