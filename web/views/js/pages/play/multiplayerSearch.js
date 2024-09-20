@@ -43,14 +43,18 @@ async function updateServers() {
 updateServers();
 
 async function viewServer(id) {
+    // TODO: Add error message for get server if it fails? 
     const getServer = await fetch(`/play/get/server/${id}`, {"method": "GET"});
     const server = await getServer.json();
 
-    viewServerInfo.querySelector(".server_info").innerHTML = `
+    const isInServer = server.players.find(player => player.id === CURRENT_USER_ID);
+
+    const serverInfo = viewServerInfo.querySelector(".server_info");
+    serverInfo.innerHTML = `
         <h2>${server.name}</h2>
         <p>
             ${server.players.length} of ${server.maxPlayers} players<br>
-            <a class="join_server">Join</a>
+            ${(!isInServer) ? `<a class="join_server">Join</a>` : `<a class="goto_server">Goto</a>`}
         </p>
     `;
     
@@ -59,6 +63,22 @@ async function viewServer(id) {
         updateServers();
     };
 
+    // Since the join button is only shown if we have not joined, we need to check before setting a click listener.
+    const joinBtn = serverInfo.querySelector(".join_server");
+    if (joinBtn) joinBtn.onclick = () => {
+        joinServer(id);
+    };
+
     viewServerInfo.style.display = "block";
     viewServers.style.display = "none";
+}
+
+async function joinServer(id) {
+    const joinRequest = await fetch(`/play/multiplayer/join/${id}`, {"method": "POST"});
+    const joinResponse = await joinRequest.json();
+
+    if (!joinRequest.ok) {
+        new ErrorBox(joinResponse.name, joinResponse.message, joinResponse.code, null, 8000);
+        return;
+    }
 }

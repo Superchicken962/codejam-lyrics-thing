@@ -52,7 +52,17 @@ class ServerManager {
      * @returns { GameServer | null } Returns server if found, or null if not.
      */
     findServerByCode(code) {
-        return this.#servers.find(server => server.code === code);
+        return this.#servers.find(server => server.code === code) || null;
+    }
+
+    /**
+     * Get servers that a player has joined.
+     * @param { string } id - Player's Spotify id.
+     * @returns { GameServer[] } Array of servers the player has joined.
+     */
+    getServersWithPlayer = (id) => {
+        // Filter servers list down to servers that contain a player with the givene id.
+        return this.#servers.filter(server => server.players?.find(player => player.id === id));
     }
 }
 

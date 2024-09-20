@@ -41,7 +41,7 @@ router.post("/multiplayer/new", requireLoggedInAPI, (req, res) => {
             name, description, maxPlayers
         },
         owner: {
-            username: req.session.user?.account?.username,
+            username: req.session.user?.account?.display_name,
             id: req.session.user?.account?.id
         }
     }).then(resp => {
@@ -53,6 +53,31 @@ router.post("/multiplayer/new", requireLoggedInAPI, (req, res) => {
         }
 
     });
+});
+
+// TODO: Consider changing the method to GET. POST just makes it harder for a user to join without navigating through the site.
+router.post("/multiplayer/join/:code", requireLoggedInAPI, (req, res) => {
+    const gameCode = req.params.code;
+
+    webSocket.ask("server.join", {
+        server: {
+            code: gameCode
+        },
+        user: {
+            // TODO: Consider changing how data is stored in the session - changing display_name to username, storing only relevant info.
+            username: req.session.user?.account?.display_name,
+            id: req.session.user?.account?.id,
+        }
+    }).then(resp => {
+
+        if (resp.success) {
+            res.status(200).json({});
+        } else {
+            res.status(500).json(errors.api.buildError(500, "Error Joining Server", resp.reason));
+        }
+        
+    });
+
 });
 
 router.get("/get/servers", (req, res) => {

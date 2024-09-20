@@ -1,4 +1,5 @@
 const { generateRandomCode } = require("../utility");
+const Player = require("./Player");
 
 
 class GameServer {
@@ -21,6 +22,28 @@ class GameServer {
         this.code = generateRandomCode(8);
 
         this.owner = ownerInfo;
+    }
+
+    /**
+     * Find a player that is connected to the server by id.
+     * @param { string } id - Player's Spotify id.
+     */
+    findPlayerById = (id) => {
+        return this.players.find(player => player.id === id) || null;
+    }
+
+    /**
+     * 
+     * @param { string } username - Player's Spotify username.
+     * @param { string } id - Player's Spotify Id.
+     */
+    joinPlayer = (username, id) => {
+        // TODO: Consider setting limit of servers player can join.
+
+        // Add player to players if not already joined.
+        if (!this.findPlayerById(id)) {
+            this.players.push(new Player(username, id));
+        }
     }
 }
 

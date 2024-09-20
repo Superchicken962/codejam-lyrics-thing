@@ -189,7 +189,7 @@ a.use_voice:hover {
     padding: 1px 8px;
     margin-bottom: 15px;
 }
-a.join_server {
+a.join_server, a.goto_server {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -203,6 +203,13 @@ a.join_server {
 }
 a.join_server:hover {
     background-color: rgba(0,140,0, 0.5);
+    cursor: pointer;
+}
+a.goto_server {
+    background-color: rgba(0,0,180, 0.5);
+}
+a.goto_server:hover {
+    background-color: rgba(0,0,180, 0.5);
     cursor: pointer;
 }
 

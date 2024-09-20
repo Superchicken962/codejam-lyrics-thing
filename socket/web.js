@@ -31,6 +31,24 @@ module.exports = function(io) {
 
                     reply({"success": true});
                     break;
+
+                case "server.join":
+                    console.log("server.join data", data);
+                    if (!data.server?.code || !data.user?.username || !data.user?.id) {
+                        reply({"success": false, "reason": "Insufficient details provided!"});
+                        return;
+                    }
+
+                    let findServer = serverManager.findServerByCode(data.server.code);
+                    if (!findServer) {
+                        reply({"success": false, "reason": "Server not found!"});
+                        return;
+                    }
+
+                    // joinPlayer does not return anything, so it is assumed it works. 
+                    // Only thing that could fail is if the player has already joined the server.
+                    findServer.joinPlayer(data.user.username, data.user.id);
+                    reply({"success": true});
             }
 
         });
