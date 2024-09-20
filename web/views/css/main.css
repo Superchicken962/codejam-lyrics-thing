@@ -200,6 +200,8 @@ a.join_server, a.goto_server {
     padding: 2px 8px;
     background-color: rgba(0,180,0, 0.5);
     width: 20%;
+    text-decoration: none;
+    color: white;
 }
 a.join_server:hover {
     background-color: rgba(0,140,0, 0.5);
@@ -209,7 +211,7 @@ a.goto_server {
     background-color: rgba(0,0,180, 0.5);
 }
 a.goto_server:hover {
-    background-color: rgba(0,0,180, 0.5);
+    background-color: rgba(0,0,140, 0.5);
     cursor: pointer;
 }
 

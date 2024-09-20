@@ -50,12 +50,11 @@ async function viewServer(id) {
     const isInServer = server.players.find(player => player.id === CURRENT_USER_ID);
 
     const serverInfo = viewServerInfo.querySelector(".server_info");
-    // TODO: Add href to "goto server" button that takes you to the game/lobby - needs route to be created in backend.
     serverInfo.innerHTML = `
         <h2>${server.name}</h2>
         <p>
             ${server.players.length} of ${server.maxPlayers} players<br>
-            ${(!isInServer) ? `<a class="join_server">Join</a>` : `<a class="goto_server">Goto</a>`}
+            ${(!isInServer) ? `<a class="join_server">Join</a>` : `<a class="goto_server" href="/game/${id}">Goto</a>`}
         </p>
     `;
     

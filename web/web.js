@@ -46,6 +46,7 @@ app.use("*", (req, res, next) => {
 });
 
 app.use("/play", require("./routes/play"));
+app.use("/game", require("./routes/game"));
 app.use("/spotify", require("./routes/spotify"));
 
 app.get("/", (req, res) => {
