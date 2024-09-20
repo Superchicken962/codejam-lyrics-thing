@@ -1,23 +1,10 @@
-// Sample data.
-const Servers = [
-    {
-        "name": "Some sort of server",
-        "description": "Join if you want",
-        "maxPlayers": 2,
-        "players": [],
-        "private": false,
-        "code": "SxjAmle"
-    },
-    {
-        "name": "Another one",
-        "description": "my server",
-        "maxPlayers": 2,
-        "players": [],
-        "private": false,
-        "code": "lAksjXw"
-    }
-];
+const GameServer = require("../classes/GameServer");
+const ServerManager = require("../classes/ServerManager");
+const serverManager = new ServerManager();
+
+serverManager.newServer(new GameServer("Some sort of server", "Join if you want", 2, false))
+serverManager.newServer(new GameServer("Another one", "my server", 2, false))
 
 module.exports = {
-    Servers
+    serverManager
 };
