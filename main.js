@@ -23,12 +23,12 @@ class FriendlyProcess {
         
         // Display any errors from the process to main.
         this.process.stderr.on("data", (data) => {
-            console.log(`\x1b[31m [${this.name}] ${data}`);
+            console.log(`\x1b[31m[${this.name}] ${data}\x1b[37m`);
         });
         
         // Display an exit message to main to show that the process has stopped.
         this.process.on("exit", (code) => {
-
+            console.log(`[${this.name}] Exited with code ${code}.`);
         });
     }
 }

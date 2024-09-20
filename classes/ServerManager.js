@@ -42,7 +42,7 @@ class ServerManager {
         }
 
         // Add to servers array, and return true to show that it has been created successfully.
-        this.#servers.push(server)
+        this.#servers.push(server);
         return true;
     }
 
