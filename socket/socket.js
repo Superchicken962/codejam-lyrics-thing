@@ -18,6 +18,7 @@ const io = new Server(server, {
 
 // Seperate namespaces into seperate files.
 require("./web")(io.of("/web"));
+require("./game")(io.of("/game"));
 
 server.listen(PORT, () => {
     console.log(`Listening on port ${PORT}!`);

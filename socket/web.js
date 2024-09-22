@@ -19,7 +19,7 @@ module.exports = function(io) {
                         "servers": serverManager.getServers()
                     });
                     break;
-                    
+
                 case "server.new":
                     if (!data.server || !data.server.name || !data.server.description || !data.owner) {
                         reply({"success": false, "reason": "Insufficient details provided!"});

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Play Multiplayer</title>
+    <link rel="stylesheet" href="/css/main"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+    <div class="quiz_page">
+
+        <div class="title">
+            <h1 class="title"><%= server.name %></h1>
+            <h2 class="title"><%= server.description %></h2>
+        </div>
+
+        <div class="quiz">
+            <h2 class="title">Quiz</h2>
+        </div>
+
+        <!-- <div class="code">
+            <h4>Game Code</h4>
+            <h3><%= server.code%></h3>
+        </div> -->
+
+        <div class="leaderboard">
+            <h3 class="title">Leaderboard</h3>
+            <div class="positions">
+            </div>
+        </div>
+
+        <div class="player_list">
+            <h3 class="title">Players</h3>
+        </div>
+
+    </div>
+</body>
+<script src="/js/utility"></script>
+<script src="/js/errorBox"></script>
+<script>
+    const SOCKET_URL = "<%= socketAddress%>";
+</script>
+<script src="/js/pages/game/multiplayerGame" type="module"></script>
+</html>

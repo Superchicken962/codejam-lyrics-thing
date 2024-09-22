@@ -1,6 +1,6 @@
 const { generateRandomCode } = require("../utility");
 const Player = require("./Player");
-
+const webSocket = require("../web/sockets").web;
 
 class GameServer {
     /**
@@ -21,6 +21,9 @@ class GameServer {
         this.private = isPrivate;
         this.code = generateRandomCode(8);
 
+        this.state = {};
+        this.interval = null;
+
         this.owner = ownerInfo;
     }
 
@@ -33,7 +36,7 @@ class GameServer {
     }
 
     /**
-     * 
+     * Join player to server.
      * @param { string } username - Player's Spotify username.
      * @param { string } id - Player's Spotify Id.
      */
@@ -44,6 +47,13 @@ class GameServer {
         if (!this.findPlayerById(id)) {
             this.players.push(new Player(username, id));
         }
+    }
+
+    broadcastState = () => {
+
+    }
+    startBroadcast = () => {
+        this.interval = setInterval(this.broadcastState, 50);
     }
 }
 
