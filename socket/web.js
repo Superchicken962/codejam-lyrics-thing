@@ -68,6 +68,11 @@ module.exports = function(io) {
                         return;
                     }
 
+                    if (serverToStart.state.started) {
+                        reply({"success": false, "reason": "Server has already been started!"});
+                        return;
+                    }
+
                     serverToStart.startGame();
 
                     reply({"success": true});
