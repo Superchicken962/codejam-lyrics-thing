@@ -33,7 +33,6 @@ module.exports = function(io) {
                     break;
 
                 case "server.join":
-                    console.log("server.join data", data);
                     if (!data.server?.code || !data.user?.username || !data.user?.id) {
                         reply({"success": false, "reason": "Insufficient details provided!"});
                         return;
@@ -49,6 +48,30 @@ module.exports = function(io) {
                     // Only thing that could fail is if the player has already joined the server.
                     findServer.joinPlayer(data.user.username, data.user.id);
                     reply({"success": true});
+                    break;
+
+                case "server.startquiz":
+                    if (!data.server?.code || !data.user.id) {
+                        reply({"success": false, "reason": "Insufficient details provided!"});
+                        return;
+                    }
+
+                    let serverToStart = serverManager.findServerByCode(data.server.code);
+                    if (!serverToStart) {
+                        reply({"success": false, "reason": "Server not found!"});
+                        return;
+                    }
+
+                    // Do not allow quiz to be started by someone that is not the owner.
+                    if (data.user.id !== serverToStart.owner.id) {
+                        reply({"success": false, "reason": "User is not the owner of this server!"});
+                        return;
+                    }
+
+                    serverToStart.startGame();
+
+                    reply({"success": true});
+                    break;
             }
 
         });

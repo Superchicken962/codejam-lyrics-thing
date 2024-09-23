@@ -21,4 +21,16 @@ router.get("/:code", (req, res) => {
     });
 });
 
+router.get("/:code/start", (req, res) => {
+    const userId = req.session.user?.account?.id;
+
+    webSocket.ask("server.startquiz", {server: {code: req.params.code}, user: {id: userId}}).then(resp => {
+        if (!resp.success) {
+            console.warn(`Server ${req.params.code} quiz attempted to start, but user (${userId}) is not owner!`);
+        }
+        
+        res.redirect(`/game/${req.params.code}`);
+    });
+});
+
 module.exports = router;
