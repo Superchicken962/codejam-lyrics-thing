@@ -11,9 +11,12 @@ class GameServer {
      * @param { Object } ownerInfo - Information about the player that made the server.
      * @param { string } ownerInfo.username - Player's Spotify username.
      * @param { string } ownerInfo.id - Player's Spotify id.
+     * @param { Object} playlistInfo - Chosen Spotify playlist.
+     * @param { string } playlistInfo.id - Playlist id.
+     * @param { Object[] } playlistInfo.songs - List of songs in the playlist.
      * @param { boolean } isPrivate - Should server be private? (Hidden from server browser).
      */
-    constructor(name, description, maxPlayers = 2, ownerInfo, isPrivate = false) {
+    constructor(name, description, maxPlayers = 2, ownerInfo, playlistInfo, isPrivate = false) {
         this.name = name;
         this.description = description;
         this.maxPlayers = maxPlayers;
@@ -21,15 +24,23 @@ class GameServer {
         this.private = isPrivate;
         this.code = generateRandomCode(8);
         this.scores = {};
+        
+        this.playlistId = playlistInfo.id;
+        this.songs = playlistInfo.songs;
+
+        this.askedQuestions = 0;
 
         this.state = {
             started: false,
             players: this.players,
             settings: {
-                maxPlayers: this.maxPlayers
+                maxPlayers: this.maxPlayers,
+                questionTime: 60000
             },
             scores: this.scores,
-            ownerId: ownerInfo.id || null
+            ownerId: ownerInfo.id || null,
+
+            currentQuestion: null
         };
 
         this.interval = null;
@@ -66,6 +77,37 @@ class GameServer {
     }
     startBroadcast = () => {
         this.interval = setInterval(this.broadcastState, 100);
+    }
+
+    /**
+     * Start the quiz.
+     */
+    startGame = () => {
+        this.state.started = true;
+        this.state.currentQuestion = this.newQuestion();
+    }
+
+    /**
+     * Generate a new question.
+     */
+    newQuestion = () => {
+        // Set question expiry to be after the specified questionTime (default 60000ms)
+        const questionExpiryDate = new Date();
+        questionExpiryDate.setMilliseconds(questionExpiryDate.getMilliseconds() + this.state.settings.questionTime);
+
+        return {
+            "num": this.askedQuestions,
+            "answers": {
+                "A": "",
+                "B": "",
+                "C": "",
+                "D": "",
+            },
+            "chosenSong": {
+                "lyrics": ""
+            },
+            "expiresAt": questionExpiryDate
+        };
     }
 }
 

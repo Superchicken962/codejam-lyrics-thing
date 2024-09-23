@@ -237,7 +237,7 @@ a.goto_server:hover {
     border-radius: 15px;
     overflow: hidden;
 }
-.new_server_form span {
+.new_server_form .item {
     display: block;
     margin: auto;
     margin-bottom: 15px;
@@ -302,6 +302,8 @@ a.goto_server:hover {
 }
 
 .quiz_page .quiz {
+    display: block;
+    position: relative;
     grid-area: main;
     background-color: rgb(15,15,15);
 }
@@ -365,4 +367,81 @@ a.goto_server:hover {
     width: 100%;
     text-align: center;
     padding: 12px 0;
+}
+
+.chooseSpotifyBtn {
+    display: inline-block;
+    margin: auto;
+    padding: 2px 8px;
+    background-color: rgb(0,160,0);
+    width: fit-content;
+    margin-top: 10px;
+    margin-bottom: 30px;
+    border-radius: 5px;
+}
+.chooseSpotifyBtn:hover {
+    background-color: rgb(0,120,0);
+    cursor: pointer;
+}
+
+.spotifyPrompt {
+    display: block;
+    margin: auto;
+    position: absolute;
+    top:0;left:0;right:0;bottom:0;
+    width: fit-content;
+    height: fit-content;
+    min-height: 150px;
+    background-color: rgb(16, 16, 26);
+    color: white;
+    padding: 4px 16px;
+    border-radius: 10px;
+    box-shadow: 2px 2px 5px black;
+    overflow: hidden;
+}
+.spotifyPrompt .select_playlist {
+    display: block;
+    margin: auto;
+    position: absolute;
+    left:0;right:0;
+    bottom:0;
+    width: 100%;
+    height: fit-content;
+    padding: 4px 0;
+    background-color: rgb(0,160,0);
+    text-align: center;
+}
+.spotifyPrompt .select_playlist:hover {
+    background-color: rgb(0,120,0);
+    cursor: pointer;
+}
+
+.management_buttons {
+    display: block;
+    margin: auto;
+    position: absolute;
+    left:0;right:0;
+    bottom: 10px;
+    width: fit-content;
+}
+.management_buttons .button {
+    display: inline-block;
+    margin: auto;
+    padding: 4px 12px;
+    background-color: rgb(0,160,0);
+    border-radius: 5px;
+    font-size: 18px;
+}
+.management_buttons .button:hover {
+    background-color: rgb(0,120,0);
+    cursor: pointer;
+}
+
+.quiz .messages {
+    display: block;
+    margin: auto;
+    width: fit-content;
+    background-color: rgba(0,0,0,0.2);
+    padding: 2px 12px;
+    border-radius: 5px;
 }

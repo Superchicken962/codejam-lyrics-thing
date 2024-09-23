@@ -17,6 +17,14 @@
 
         <div class="quiz">
             <h2 class="title">Quiz</h2>
+            <div class="messages"></div>
+            <div class="lyrics_display"></div>
+            <div class="questions"></div>
+            <% if (amIOwner) { %>
+                <div class="management_buttons">
+                    <a class="button startQuizBtn">Start Quiz</a>
+                </div>
+            <% } %>
         </div>
 
         <!-- <div class="code">

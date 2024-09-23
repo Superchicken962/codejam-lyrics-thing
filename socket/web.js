@@ -21,12 +21,12 @@ module.exports = function(io) {
                     break;
 
                 case "server.new":
-                    if (!data.server || !data.server.name || !data.server.description || !data.owner) {
+                    if (!data.server || !data.server.name || !data.server.description || !data.owner || !data.playlistInfo) {
                         reply({"success": false, "reason": "Insufficient details provided!"});
                         return;
                     }
 
-                    const server = new GameServer(data.server.name, data.server.description, data.server.maxPlayers || 2, data.owner);
+                    const server = new GameServer(data.server.name, data.server.description, data.server.maxPlayers || 2, data.owner, data.playlistInfo);
                     serverManager.newServer(server);
 
                     reply({"success": true});

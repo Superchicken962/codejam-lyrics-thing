@@ -17,7 +17,7 @@ router.get("/:code", (req, res) => {
             return;
         }
     
-        res.render("routes/game/multiplayer_game.ejs", {server: findServer, socketAddress: config.socketAddress});
+        res.render("routes/game/multiplayer_game.ejs", {server: findServer, socketAddress: config.socketAddress, amIOwner: (req.session.user?.account?.id === findServer.owner?.id)});
     });
 });
 

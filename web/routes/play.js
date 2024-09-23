@@ -1,6 +1,7 @@
 const express = require("express");
 const errors = require("../errors");
 const { requireLoggedInAPI } = require("../middlewares");
+const SpotifyAPI = require("../apis/spotifyAPI");
 const router = express.Router();
 const webSocket = require("../sockets").web;
 
@@ -25,8 +26,8 @@ router.get("/multiplayer/new", (req, res) => {
     res.render("routes/play/create_server.ejs")
 });
 
-router.post("/multiplayer/new", requireLoggedInAPI, (req, res) => {
-    const { name, description, maxPlayers } = req.body;
+router.post("/multiplayer/new", requireLoggedInAPI, async(req, res) => {
+    const { name, description, maxPlayers, playlistUrl } = req.body;
 
     const noValue = (!name || !description || !maxPlayers);
     const outOfRange = (name?.length > 75 || description?.length > 120 || !(maxPlayers >= 2 && maxPlayers <= 8))
@@ -36,6 +37,31 @@ router.post("/multiplayer/new", requireLoggedInAPI, (req, res) => {
         return;
     }
 
+    const playlistId = SpotifyAPI.playlistUrlToId(playlistUrl);
+    if (!playlistId) {
+        res.status(400).json(errors.api.buildError(400, "Bad Request", "Invalid playlist given!"));
+        return;
+    }
+
+    let nextUrlToFetch = `/playlists/${playlistId}/tracks`;
+    let getPlaylist;
+    const playlistInfo = {
+        id: playlistId,
+        songs: []
+    };
+
+    // Keep making requests until all songs in a playlist have been retrieved - allows for larger playlists to have songs included since each fetch limits to 100 songs.
+    while (nextUrlToFetch) {
+        getPlaylist = await SpotifyAPI.GET(nextUrlToFetch, "v1", req.session.user.access_token.token);
+
+        // Remove base url.
+        nextUrlToFetch = getPlaylist.next?.replaceAll("https://api.spotify.com/v1", "");
+
+        for (const item of getPlaylist.items) {
+            playlistInfo.songs.push(item.track);
+        }
+    }
+
     webSocket.ask("server.new", {
         server: {
             name, description, maxPlayers
@@ -43,7 +69,8 @@ router.post("/multiplayer/new", requireLoggedInAPI, (req, res) => {
         owner: {
             username: req.session.user?.account?.display_name,
             id: req.session.user?.account?.id
-        }
+        },
+        playlistInfo: playlistInfo
     }).then(resp => {
         
         if (resp.success) {

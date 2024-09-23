@@ -44,10 +44,15 @@ socket.on("server.state", updateGame);
 function updateGame(status) {
     const elements = {
         playerList: document.querySelector(".player_list .players"),
-        leaderboard: document.querySelector(".leaderboard .positions")
+        leaderboard: document.querySelector(".leaderboard .positions"),
+        quiz: {
+            lyrics: document.querySelector(".quiz .lyrics_display"),
+            questions: document.querySelector(".quiz .questions"),
+            messages: document.querySelector(".quiz .messages")
+        }
     };
 
-    // console.log("Game update:", status.state);
+    console.log("Game update:", status.state);
 
     // -- Player List --
 
@@ -87,5 +92,13 @@ function updateGame(status) {
     }
 
     elements.leaderboard.innerHTML = leaderboardHtml;
+
+
+    // -- Quiz --
+
+    if (!status.state.started) {
+        elements.quiz.messages.innerHTML = "<h2>Quiz has not started yet!</h2><h4>Ask the server owner to start it!</h4>";
+        return;
+    }
 
 }
