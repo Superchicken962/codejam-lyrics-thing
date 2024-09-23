@@ -111,8 +111,8 @@ function updateGame(status) {
         return;
     }
 
-    elements.quiz.progressBar.container.style.display = "block";
-    elements.quiz.questionNum.style.display = "block";
+    elements.quiz.progressBar.container.show();
+    elements.quiz.questionNum.show();
 
     const question = status.state.currentQuestion;
 
@@ -137,8 +137,10 @@ function updateGame(status) {
         currentQuestionId = question.id;
 
         console.log(question);
-        
+
         elements.quiz.messages.innerHTML = "";
+        elements.quiz.messages.hide();
+
         elements.quiz.questions.innerHTML = `
             <a class="question" id="A">
                 <span class="song_name">${question.answers["A"].songName}</span><br>
@@ -168,6 +170,8 @@ function updateGame(status) {
         }
     } else {
         elements.quiz.questions.innerHTML = "";
+
+        elements.quiz.messages.show();
         elements.quiz.messages.innerHTML = "<h2>You have chosen an answer!</h2><h4>Wait for everyone else to answer, or for the timer to end.</h4>";
     }
 
@@ -175,11 +179,10 @@ function updateGame(status) {
 
 function guessAnswer(answer) {
     askSocket("quiz.question.answer", {server: SERVER_CODE, user: CURRENT_USER_ID, answer: answer}).then(resp => {
+        // The only "normal" time this will fail, is when an answer is clicked twice, or somehow another answer is selected.
         if (resp.status !== 200) {
             console.error("Failed to submit answer!");
             return;
         }
-
-        // console.log(`Selected answer ${answer}`);
     });
 }
