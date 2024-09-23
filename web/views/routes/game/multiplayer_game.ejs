@@ -32,6 +32,9 @@
 
         <div class="player_list">
             <h3 class="title">Players</h3>
+            <div class="players">
+
+            </div>
         </div>
 
     </div>
@@ -41,6 +44,7 @@
 <script>
     const SOCKET_URL = "<%= socketAddress%>";
     const SERVER_CODE = "<%= server.code%>";
+    const CURRENT_USER_ID = "<%= session.user?.account?.id %>";
 </script>
 <script src="/js/pages/game/multiplayerGame" type="module"></script>
 </html>

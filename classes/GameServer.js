@@ -20,10 +20,18 @@ class GameServer {
         this.players = [];
         this.private = isPrivate;
         this.code = generateRandomCode(8);
+        this.scores = {};
 
         this.state = {
-            started: false
+            started: false,
+            players: this.players,
+            settings: {
+                maxPlayers: this.maxPlayers
+            },
+            scores: this.scores,
+            ownerId: ownerInfo.id || null
         };
+
         this.interval = null;
 
         this.owner = ownerInfo;
@@ -53,7 +61,7 @@ class GameServer {
     }
 
     broadcastState = () => {
-        // Ask the socket server to relay information to the players, since we cannot do that here (We're technically a client too).   
+        // Ask the socket server to relay information to the players, since we cannot do that here (We're technically a client too).  
         gameSocket.ask("server.relayState", {state: this.state, server: {code: this.code}});
     }
     startBroadcast = () => {

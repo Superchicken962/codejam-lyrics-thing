@@ -291,7 +291,9 @@ a.goto_server:hover {
     grid-template-rows: 0.2fr auto auto;
     gap: 15px;
     padding: 15px;
-    background-color: rgba(255,0,0,0.1);
+    /* background-color: rgba(255,0,0,0.1); */
+    background-color: black;
+    border-radius: 15px;
     position: absolute;
     margin: auto;
     top:0;bottom:0;left:0;right:0;
@@ -318,6 +320,45 @@ a.goto_server:hover {
     grid-area: players;
     background-color: rgb(15,15,15);
 }
+.quiz_page .player_list .players, .quiz_page .leaderboard .positions {
+    display: block;
+    margin: auto;
+    width: 100%;
+    text-align: center;
+}
+.quiz_page .player_list .players .player, .quiz_page .leaderboard .positions .player {
+    position: relative;
+    background-color: rgba(0,0,0,0.2);
+    padding: 8px 0;
+}
+.quiz_page .player_list .players .player .selfIndicator {
+    display: block;
+    margin: auto;
+    position: absolute;
+    top:0;bottom:0;
+    left:10px;
+    height: fit-content;
+    font-size: 18px;
+}
+.quiz_page .player_list .players .player .ownerIndicator {
+    display: block;
+    margin: auto;
+    position: absolute;
+    top:0;bottom:0;
+    right:10px;
+    height: fit-content;
+    font-size: 18px;
+}
+
+.quiz_page .leaderboard .positions .player .score {
+    display: block;
+    margin: auto;
+    position: absolute;
+    top:0;bottom:0;
+    right: 15px;
+    height: fit-content;
+}
+
 .quiz_page div .title {
     display: block;
     margin: auto;

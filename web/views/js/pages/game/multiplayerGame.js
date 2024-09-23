@@ -39,6 +39,53 @@ askSocket("server.join", {server: {code: SERVER_CODE}}).then(resp => {
     console.log("Connected to game server!");
 });
 
-socket.on("server.state", (data) => {
-    console.log("Game update:", data);
-});
+socket.on("server.state", updateGame);
+
+function updateGame(status) {
+    const elements = {
+        playerList: document.querySelector(".player_list .players"),
+        leaderboard: document.querySelector(".leaderboard .positions")
+    };
+
+    // console.log("Game update:", status.state);
+
+    // -- Player List --
+
+    let playersListHtml = "";
+
+    for (const player of status.state.players) {
+        playersListHtml += `
+            <div class="player">
+                ${(player.id === CURRENT_USER_ID) ? `<i class="selfIndicator fa fa-user" title="This is you!"></i>` : ""}
+                <p>${player.username}</p>
+                ${(status.state.ownerId === player.id) ? `<i class="ownerIndicator fa fa-crown" title="Server owner"></i>` : ""}
+            </div>
+        `;
+    }
+
+    elements.playerList.innerHTML = playersListHtml;
+
+    // -- Leaderboard --
+
+    // Join the player list with the scores object, and then sort by the score to show highest at the top.
+    const leaderboard = status.state.players.map(p => {
+        p.score = status.state.scores[p.id] || 0;
+        return p;
+    }).sort((a,b) => b.score-a.score);
+
+    let leaderboardHtml = "";
+
+    for (const position of leaderboard) {
+        leaderboardHtml += `
+            <div class="player">
+                <p>
+                    <span class="name">${position.username}</span>
+                    <span class="score">${position.score}</span>
+                </p>
+            </div>
+        `;
+    }
+
+    elements.leaderboard.innerHTML = leaderboardHtml;
+
+}
