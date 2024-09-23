@@ -51,6 +51,8 @@ class GameServer {
 
         this.owner = ownerInfo;
         this.startBroadcast();
+
+        // TODO: Possibly allow user to select the time per question.
     }
 
     /**
@@ -83,7 +85,7 @@ class GameServer {
             const now = Date.now();
 
             // Everyone has answered if the length of the player answers for this question matches the length of the connected players.
-            const everyoneAnswered = (this.state.currentQuestion.playerAnswers.length === this.state.players.length);
+            const everyoneAnswered = (this.state.currentQuestion?.playerAnswers?.length === this.state.players.length);
 
             // Check if the question should expire (if expiry date has passed), Or if all the players in the server have chosen an answer.
             if (now > this.state.currentQuestion.expiresAt || everyoneAnswered) {
@@ -150,7 +152,7 @@ class GameServer {
             "playerAnswers": []
         };
 
-        // Choose song and get lyrics.
+        // Choose song.
 
         // Copy songs into new array for this method.
         const availableSongs = this.songs.slice();
@@ -169,6 +171,7 @@ class GameServer {
             songId: chosenSong.id,
             songName: chosenSong.name,
             artistName: chosenSong.artists[0].name,
+            isrc: chosenSong.external_ids?.isrc,
             album: {
                 name: chosenSong.album?.name,
                 cover: chosenSong.album?.images[0]
@@ -192,6 +195,7 @@ class GameServer {
                 songId: randomSong.id,
                 songName: randomSong.name,
                 artistName: randomSong.artists[0].name,
+                isrc: randomSong.external_ids?.isrc,
                 album: {
                     name: randomSong.album?.name,
                     cover: randomSong.album?.images[0]

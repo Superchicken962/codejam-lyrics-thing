@@ -14,8 +14,8 @@ module.exports = {
      * @param { string } parameters.value - Parameter value.
      * @returns 
      */
-    get: (endpoint, parameters) => {
+    GET: (endpoint, parameters) => {
         const url = `${baseURL}${endpoint}?apikey=${process.env.LYRICS_API_KEY}${parameters.map(param => `&${param.name}=${param.value}`)}`;
-        return fetch(url, {"method": "GET"});
+        return fetch(url, {"method": "GET"}).then(resp => resp.json());
     }
 };

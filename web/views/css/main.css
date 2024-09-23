@@ -360,6 +360,10 @@ a.goto_server:hover {
     right: 15px;
     height: fit-content;
 }
+.quiz_page .leaderboard .positions .player .accuracy {
+    color: grey;
+    font-size: 12px;
+}
 
 .quiz_page div .title {
     display: block;
@@ -511,4 +515,24 @@ a.goto_server:hover {
 .quiz .questions a.question .song_artist {
     color: grey;
     font-size: 14px;
+}
+
+.quiz .lyrics_display {
+    display: none;
+    margin: auto;
+    width: 60%;
+    height: fit-content;
+    background-color: rgb(200,200,200);
+    color: black;
+    /* background-color: rgb(10,10,10); */
+    padding: 2px 0;
+    border-radius: 10px;
+    font-size: 24px;
+    text-align: center;
+    margin-top: 25px;
+}
+
+.quiz .lyrics_display .copyright {
+    color: grey;
+    font-size: 10px;
 }

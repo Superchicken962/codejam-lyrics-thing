@@ -60,8 +60,6 @@ function updateGame(status) {
         }
     };
 
-    // console.log("Game update:", status.state);
-
     // -- Player List --
 
     let playersListHtml = "";
@@ -90,12 +88,18 @@ function updateGame(status) {
 
     let leaderboardHtml = "";
 
+    const showAccuracy = true;
+
     for (const position of leaderboard) {
+        const accuracy = ((position.score / status.state.currentQuestion.num)*100).toFixed(1);
+        
         leaderboardHtml += `
             <div class="player">
                 <p>
-                    <span class="name">${position.username}</span>
                     <span class="score">${position.score}</span>
+                    <span class="name">${position.username}</span>
+                    <br>
+                    ${(showAccuracy && accuracy !== "NaN") ? `<span class="accuracy">${accuracy}% Accuracy</span>` : ""}
                 </p>
             </div>
         `;
@@ -136,8 +140,6 @@ function updateGame(status) {
         if (question.id === currentQuestionId) return;
         currentQuestionId = question.id;
 
-        console.log(question);
-
         elements.quiz.messages.innerHTML = "";
         elements.quiz.messages.hide();
 
@@ -168,10 +170,20 @@ function updateGame(status) {
                 guessAnswer(this.id);
             });
         }
+
+        askSocket("song.get.randomLyrics", {isrc: question.answers[question.chosenSong.answer].isrc }).then(resp => {
+            elements.quiz.lyrics.innerHTML = `
+                <p>${resp.lyrics}</p>
+                <p class="copyright">${resp.copyrightNote}</p>
+            `;
+            elements.quiz.lyrics.show();
+        });
+
     } else {
         elements.quiz.questions.innerHTML = "";
 
         elements.quiz.messages.show();
+        elements.quiz.lyrics.hide();
         elements.quiz.messages.innerHTML = "<h2>You have chosen an answer!</h2><h4>Wait for everyone else to answer, or for the timer to end.</h4>";
     }
 
