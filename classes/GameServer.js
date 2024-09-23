@@ -1,5 +1,6 @@
 const { generateRandomCode } = require("../utility");
 const Player = require("./Player");
+const Question = require("./type-definitions/Question");
 const gameSocket = require("../web/sockets").game;
 
 class GameServer {
@@ -40,8 +41,11 @@ class GameServer {
             scores: this.scores,
             ownerId: ownerInfo.id || null,
 
-            currentQuestion: null
+            // Instantiate a question class just for the intellisense types. It will be replaced when the quiz starts anyway.
+            currentQuestion: new Question()
         };
+        
+        this.playerAnswers = {};
 
         this.interval = null;
 
@@ -71,7 +75,36 @@ class GameServer {
         }
     }
 
+    /**
+     * The game "tick" that will be sent to lobbies every 100ms.
+     */
     broadcastState = () => {
+        if (this.state.started) {
+            const now = Date.now();
+
+            // Everyone has answered if the length of the player answers for this question matches the length of the connected players.
+            const everyoneAnswered = (this.state.currentQuestion.playerAnswers.length === this.state.players.length);
+
+            // Check if the question should expire (if expiry date has passed), Or if all the players in the server have chosen an answer.
+            if (now > this.state.currentQuestion.expiresAt || everyoneAnswered) {
+                const correctAnswer = this.state.currentQuestion.chosenSong.answer;
+
+                // Check if the question number key exists, because it won't if no one answers in time.
+                if (this.playerAnswers[this.askedQuestions]) {
+                    // Get player answers for the current question number, and check them.
+                    for (const [player, answer] of Object.entries(this.playerAnswers[this.askedQuestions])) {
+                        if (answer === correctAnswer) {
+                            this.awardCorrectAnswer(player);
+                        }
+                    }
+                }
+
+                this.state.currentQuestion = this.newQuestion();
+            }
+
+            // TODO: Add another check for if each player has answered the question - if so, go to next question.
+        }
+
         // Ask the socket server to relay information to the players, since we cannot do that here (We're technically a client too).  
         gameSocket.ask("server.relayState", {state: this.state, server: {code: this.code}});
     }
@@ -89,25 +122,116 @@ class GameServer {
 
     /**
      * Generate a new question.
+     * @returns { Question } Question info
      */
     newQuestion = () => {
         // Set question expiry to be after the specified questionTime (default 60000ms)
         const questionExpiryDate = new Date();
         questionExpiryDate.setMilliseconds(questionExpiryDate.getMilliseconds() + this.state.settings.questionTime);
 
-        return {
+        // Increment asked questions by 1.
+        this.askedQuestions++;
+
+        const obj = {
+            "id": generateRandomCode(16),
             "num": this.askedQuestions,
             "answers": {
-                "A": "",
-                "B": "",
-                "C": "",
-                "D": "",
+                "A": null,
+                "B": null,
+                "C": null,
+                "D": null,
             },
             "chosenSong": {
+                "answer": null,
                 "lyrics": ""
             },
-            "expiresAt": questionExpiryDate
+            "expiresAt": questionExpiryDate.getTime(),
+            "expiryTime": this.state.settings.questionTime || 60000,
+            "playerAnswers": []
         };
+
+        // Choose song and get lyrics.
+
+        // Copy songs into new array for this method.
+        const availableSongs = this.songs.slice();
+
+        // Pick a random song to be the answer.
+        const chosenSongIndex = Math.floor(Math.random() * availableSongs.length);
+        let chosenSong = availableSongs[chosenSongIndex];
+
+        // Pick a random answer to be the correct answer.
+        const answerSlots = ["A","B","C","D"];
+        const songAnswerPositionIndex = Math.floor(Math.random() * answerSlots.length);
+        const songAnswerPosition = answerSlots[songAnswerPositionIndex];
+
+        // Assign song info to the answer position.
+        obj.answers[songAnswerPosition] = {
+            songId: chosenSong.id,
+            songName: chosenSong.name,
+            artistName: chosenSong.artists[0].name,
+            album: {
+                name: chosenSong.album?.name,
+                cover: chosenSong.album?.images[0]
+            }
+        };
+        obj.chosenSong.answer = songAnswerPosition;
+
+        // Remove the slot from the available slots so then it won't be refilled.
+        answerSlots.splice(songAnswerPositionIndex, 1);
+
+        // Delete correct answer song from available songs so it cannot be one of the other answers.
+        availableSongs.splice(chosenSongIndex, 1);
+
+
+        // Assign random songs to the remaining slots.
+        for (const slot of answerSlots) {
+            let randomSongIndex = Math.floor(Math.random() * availableSongs.length);
+            let randomSong = availableSongs[randomSongIndex];
+
+            obj.answers[slot] = {
+                songId: randomSong.id,
+                songName: randomSong.name,
+                artistName: randomSong.artists[0].name,
+                album: {
+                    name: randomSong.album?.name,
+                    cover: randomSong.album?.images[0]
+                }
+            };
+
+            // Once again, delete the chosen song so it cannot be chosen again.
+            availableSongs.splice(randomSongIndex, 1);
+        }
+
+        return obj;
+    }
+
+    /**
+     * Registers a player's answer to the current question.
+     * @param { string } id - The player's id.
+     * @param { string } answer - The selected answer.
+     * @returns { boolean } Was the answer successfully registered?
+     */
+    registerPlayerAnswer = (id, answer) => {
+        // Do not add an answer if the player has already chosen one for the question.
+        if (this.state.currentQuestion.playerAnswers.find(player => player.id === id)) return false;
+
+        this.state.currentQuestion.playerAnswers.push({"id": id, "answer": answer});
+
+        // Add player answe to list of answered questions object, with the key as the id.
+        this.playerAnswers[this.askedQuestions] = (this.playerAnswers[this.askedQuestions] || {});
+        this.playerAnswers[this.askedQuestions][id] = answer;
+
+        return true;
+    }
+
+    /**
+     * Gives score to the player that answered correctly.
+     * @param { string } id - Player id that answered.
+     */
+    awardCorrectAnswer = (id) => {
+        // Set the user score as it's existing value or 0, then add 1.
+        this.scores[id] = (this.scores[id] || 0);
+        this.scores[id] += 1;
     }
 }
 

@@ -26,7 +26,7 @@ router.get("/:code/start", (req, res) => {
 
     webSocket.ask("server.startquiz", {server: {code: req.params.code}, user: {id: userId}}).then(resp => {
         if (!resp.success) {
-            console.warn(`Server ${req.params.code} quiz attempted to start, but user (${userId}) is not owner!`);
+            console.warn(`Server ${req.params.code} quiz attempted to start, but failed:`, resp.reason);
         }
         
         res.redirect(`/game/${req.params.code}`);

@@ -37,6 +37,28 @@ module.exports = function(io) {
                         "status": 200,
                     });
                     break;
+
+                case "quiz.question.answer":
+                    if (!data.server || !data.user || !data.answer) {
+                        reply({"status": 400});
+                        return;
+                    }
+
+                    let server = serverManager.findServerByCode(data.server);
+                    if (!server) {
+                        reply({"status": 404});
+                        return;
+                    }
+
+                    let registerSuccess = server.registerPlayerAnswer(data.user, data.answer);
+
+                    if (!registerSuccess) {
+                        reply({"status": 500});
+                        return;
+                    }
+
+                    reply({"status": 200});
+                    break;
             }
         });
     });

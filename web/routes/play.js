@@ -62,6 +62,12 @@ router.post("/multiplayer/new", requireLoggedInAPI, async(req, res) => {
         }
     }
 
+    // Minimum of 10 songs in a playlist.
+    if (playlistInfo.songs.length < 10) {
+        res.status(400).json(errors.api.buildError(400, "Bad Request", "Playlists must contain at least 10 songs!"));
+        return;
+    }
+
     webSocket.ask("server.new", {
         server: {
             name, description, maxPlayers
