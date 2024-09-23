@@ -6,7 +6,6 @@ const http = require("http");
 const server = http.createServer();
 const { Server } = require("socket.io");
 const config = require("../config.json");
-const { Games } = require("./data");
 
 const PORT = config.socketPort || 3001;
 

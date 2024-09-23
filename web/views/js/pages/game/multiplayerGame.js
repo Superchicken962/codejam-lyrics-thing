@@ -3,8 +3,6 @@ import { io } from "https://cdn.socket.io/4.7.5/socket.io.esm.min.js";
 const socket = io(SOCKET_URL+"game");
 
 socket.on("connect", () => {
-    console.log("Connected to game server!");
-    
     socket.on("askSocket:response", (data) => {
         if (messagesAwaitingResponses[data.id]) {
             if (typeof messagesAwaitingResponses[data.id] === "function") messagesAwaitingResponses[data.id](data);
@@ -31,10 +29,16 @@ function askSocket(event, data = {}) {
     });
 }
 
-// socket.on("game.update", (data) => {
-//     console.log("Game update:", data);
-// });
+// Join the server's socket room to recieve game states.
+askSocket("server.join", {server: {code: SERVER_CODE}}).then(resp => {
+    if (resp.status !== 200) {
+        console.error("Failed to connect to game server!");
+        return;
+    }
 
-askSocket("game.getdata").then(resp => {
-    console.log(resp);
+    console.log("Connected to game server!");
+});
+
+socket.on("server.state", (data) => {
+    console.log("Game update:", data);
 });

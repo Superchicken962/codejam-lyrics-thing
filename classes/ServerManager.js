@@ -14,7 +14,7 @@ class ServerManager {
      * @returns { GameServer[] } List of game servers.
      */
     getServers() {
-        return this.#servers;
+        return this.#servers.map(this.cleanseServer);
     }
 
     /**
@@ -52,7 +52,7 @@ class ServerManager {
      * @returns { GameServer | null } Returns server if found, or null if not.
      */
     findServerByCode(code) {
-        return this.#servers.find(server => server.code === code) || null;
+        return this.cleanseServer(this.#servers.find(server => server.code === code));
     }
 
     /**
@@ -62,7 +62,25 @@ class ServerManager {
      */
     getServersWithPlayer = (id) => {
         // Filter servers list down to servers that contain a player with the givene id.
-        return this.#servers.filter(server => server.players?.find(player => player.id === id));
+        return this.#servers.filter(server => server.players?.find(player => player.id === id)).map(this.cleanseServer);
+    }
+
+    /**
+     * Remove unneeded values from the server object (values that do not need to be sent across sockets).
+     * @param { GameServer | null | undefined } server - Server to use. Can safely pass in null - just returns null instantly.
+     */
+    cleanseServer = (server) => {
+        if (!server) return null;
+
+        let updatedServer = server;
+
+        // delete updatedServer.broadcastState;
+        // delete updatedServer.startBroadcast;
+        
+        // Delete interval from server object to send - otherwise it throws a "max call size exceeded" error when sending to socket.
+        delete updatedServer.interval;
+
+        return updatedServer;
     }
 }
 

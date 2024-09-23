@@ -14,13 +14,28 @@ module.exports = function(io) {
             }
 
             switch(data.message) {
-                case "test":
-                    reply({
-                        "msg": "Hi"
-                    });
+                case "server.relayState":
+                    if (!data.server?.code) {
+                        reply({"status": 400});
+                        return;
+                    }
+
+                    socket.to(`server#${data.server.code}`).emit("server.state", {state: data.state});
+                    reply({"status": 200});
                     break;
 
-                case "game.update":
+                case "server.join":
+                    if (!data.server?.code) {
+                        reply({"status": 400});
+                        return;
+                    }
+
+                    // Join the socket to the server's socket room.
+                    socket.join(`server#${data.server.code}`);
+
+                    reply({
+                        "status": 200,
+                    });
                     break;
             }
         });

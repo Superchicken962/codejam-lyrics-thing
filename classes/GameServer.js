@@ -1,6 +1,6 @@
 const { generateRandomCode } = require("../utility");
 const Player = require("./Player");
-const webSocket = require("../web/sockets").web;
+const gameSocket = require("../web/sockets").game;
 
 class GameServer {
     /**
@@ -21,10 +21,13 @@ class GameServer {
         this.private = isPrivate;
         this.code = generateRandomCode(8);
 
-        this.state = {};
+        this.state = {
+            started: false
+        };
         this.interval = null;
 
         this.owner = ownerInfo;
+        this.startBroadcast();
     }
 
     /**
@@ -50,10 +53,11 @@ class GameServer {
     }
 
     broadcastState = () => {
-
+        // Ask the socket server to relay information to the players, since we cannot do that here (We're technically a client too).   
+        gameSocket.ask("server.relayState", {state: this.state, server: {code: this.code}});
     }
     startBroadcast = () => {
-        this.interval = setInterval(this.broadcastState, 50);
+        this.interval = setInterval(this.broadcastState, 100);
     }
 }
 
