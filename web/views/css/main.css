@@ -251,6 +251,9 @@ a.goto_server:hover {
     padding: 4px 12px;
     font-size: 14px;
 }
+.new_server_form input[type=range] {
+    padding: 4px 0;
+}
 .new_server_form textarea {
     background: none;
     color: white;

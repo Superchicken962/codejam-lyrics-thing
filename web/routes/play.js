@@ -27,7 +27,7 @@ router.get("/multiplayer/new", (req, res) => {
 });
 
 router.post("/multiplayer/new", requireLoggedInAPI, async(req, res) => {
-    const { name, description, maxPlayers, playlistUrl } = req.body;
+    const { name, description, maxPlayers, playlistUrl, questionLength } = req.body;
 
     const noValue = (!name || !description || !maxPlayers);
     const outOfRange = (name?.length > 75 || description?.length > 120 || !(maxPlayers >= 2 && maxPlayers <= 8))
@@ -70,7 +70,7 @@ router.post("/multiplayer/new", requireLoggedInAPI, async(req, res) => {
 
     webSocket.ask("server.new", {
         server: {
-            name, description, maxPlayers
+            name, description, maxPlayers, questionLength
         },
         owner: {
             username: req.session.user?.account?.display_name,

@@ -16,7 +16,11 @@
             <span class="item"><label for="server_name">Server Name</label><br><textarea id="server_name" class="server_name" placeholder="Name..." maxlength="75" required></textarea></span>
             <span class="item"><label for="server_description">Server Description</label><br><textarea id="server_description" class="server_description" placeholder="Description..." maxlength="120" required></textarea></span>
             <span class="item"><label for="max_players">Max Players</label><br><input id="max_players" class="max_players" type="number" min="2" max="8" value="2" required/></span>
-
+            <span class="item"><label for="question_length">Question Time</label>
+                <br>
+                Selected time: <span class="question_length_selected_preview">60s</span>
+                <br>
+                <input id="question_length" class="question_length" type="range" min="3" max="90" value="60" required/></span>
             <p>
                 <label>Spotify Playlist</label>
                 <a class="chooseSpotifyBtn">Choose</a>

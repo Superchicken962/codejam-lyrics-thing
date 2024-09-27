@@ -1,5 +1,7 @@
 const createServerForm = document.querySelector(".new_server_form");
 const chooseSpotifyBtn = document.querySelector(".chooseSpotifyBtn");
+const selectQuestionTime = document.querySelector("input.question_length");
+const questionTimePreviewElement = document.querySelector(".question_length_selected_preview");
 
 const spotifyFormValues = {
     playlistUrl: null
@@ -20,6 +22,7 @@ createServerForm.addEventListener("submit", async function(ev) {
     const serverName = createServerForm.querySelector("#server_name")?.value;
     const serverDesc = createServerForm.querySelector("#server_description")?.value;
     const maxPlayers = createServerForm.querySelector("#max_players")?.value;
+    const questionLength = createServerForm.querySelector("#question_length")?.value;
 
     // Input validation - because form can be edited.
     const noValue = (!serverName || !serverDesc || !maxPlayers);
@@ -45,7 +48,8 @@ createServerForm.addEventListener("submit", async function(ev) {
         "name": serverName,
         "description": serverDesc,
         "maxPlayers": maxPlayers,
-        "playlistUrl": spotifyFormValues.playlistUrl
+        "playlistUrl": spotifyFormValues.playlistUrl,
+        "questionLength": (parseInt(questionLength) || 60)*1000
     };
 
     const requestCreation = await fetch("/play/multiplayer/new", {"method": "POST", headers, body: JSON.stringify(body)});
@@ -94,4 +98,8 @@ chooseSpotifyBtn.addEventListener("click", async() => {
     });
 
     document.body.appendChild(spotifyPlaylistPrompt);
+});
+
+selectQuestionTime.addEventListener("input", function() {
+    questionTimePreviewElement.textContent = `${this.value}s`;
 });

@@ -15,9 +15,10 @@ class GameServer {
      * @param { Object} playlistInfo - Chosen Spotify playlist.
      * @param { string } playlistInfo.id - Playlist id.
      * @param { Object[] } playlistInfo.songs - List of songs in the playlist.
+     * @param { number } questionLength - Time (in miliseconds) that each question should stay for.
      * @param { boolean } isPrivate - Should server be private? (Hidden from server browser).
      */
-    constructor(name, description, maxPlayers = 2, ownerInfo, playlistInfo, isPrivate = false) {
+    constructor(name, description, maxPlayers = 2, ownerInfo, playlistInfo, questionLength = 60000, isPrivate = false) {
         this.name = name;
         this.description = description;
         this.maxPlayers = maxPlayers;
@@ -36,7 +37,7 @@ class GameServer {
             players: this.players,
             settings: {
                 maxPlayers: this.maxPlayers,
-                questionTime: 60000
+                questionTime: questionLength
             },
             scores: this.scores,
             ownerId: ownerInfo.id || null,

@@ -26,7 +26,7 @@ module.exports = function(io) {
                         return;
                     }
 
-                    const server = new GameServer(data.server.name, data.server.description, data.server.maxPlayers || 2, data.owner, data.playlistInfo);
+                    const server = new GameServer(data.server.name, data.server.description, data.server.maxPlayers || 2, data.owner, data.playlistInfo, (data.server.questionLength || 60000));
                     serverManager.newServer(server);
 
                     reply({"success": true});
