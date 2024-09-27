@@ -82,7 +82,7 @@ module.exports = function(io) {
                     const randomLineIndex = Math.floor(Math.random() * lyrics.length);
                     randomLyrics = lyrics[randomLineIndex];
 
-                    reply({"status": 200, "lyrics": randomLyrics, "copyrightNote": lyricsData.message?.body?.lyrics?.lyrics_copyright, "scripTracking": lyricsData.message?.body?.lyrics?.script_tracking_url, "pixelTracking": lyricsData.message?.body?.lyrics?.pixel_tracking_url});
+                    reply({"status": 200, "lyrics": randomLyrics, "copyrightNote": lyricsData.message?.body?.lyrics?.lyrics_copyright, "scriptTracking": lyricsData.message?.body?.lyrics?.script_tracking_url, "pixelTracking": lyricsData.message?.body?.lyrics?.pixel_tracking_url});
                     break;
             }
         });

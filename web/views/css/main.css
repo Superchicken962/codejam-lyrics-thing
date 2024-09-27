@@ -286,8 +286,8 @@ a.goto_server:hover {
     display: grid;
     grid-template-areas: 
         'title title title title title title'
-        'leaderboard main main main main players'
-        'leaderboard main main main main players';
+        'leaderboard main main main main answers'
+        'leaderboard main main main main answers';
     grid-template-rows: 0.2fr auto auto;
     gap: 15px;
     padding: 15px;
@@ -300,6 +300,76 @@ a.goto_server:hover {
     width: 90%;
     height: 90%;
 }
+@media screen and (max-width: 1500px) {
+    .quiz_page {
+        grid-template-areas: 
+        'title title title title title title'
+        'leaderboard leaderboard main main answers answers'
+        'leaderboard leaderboard main main answers answers';
+    }
+}
+@media screen and (max-width: 1250px) {
+    .quiz_page .leaderboard .positions .player {
+        font-size: 12px !important;
+    }
+    .quiz_page .leaderboard .positions .player .accuracy {
+        font-size: 10px !important;
+    }
+}
+@media screen and (max-width: 1050px) {
+    .quiz_page .leaderboard .positions .player {
+        font-size: 10px !important;
+    }
+    .quiz_page .leaderboard .positions .player .accuracy {
+        font-size: 8px !important;
+    }
+}
+@media screen and (max-width: 900px) {
+    .quiz_page {
+        grid-template-areas: 
+        'title title title title title title'
+        'leaderboard leaderboard leaderboard main main main'
+        'leaderboard leaderboard leaderboard main main main'
+        'answers answers answers answers answers answers';
+
+        height: 100%;
+    }
+}
+@media screen and (max-width: 650px) {
+    .quiz_page {
+        grid-template-areas: 
+        'title title title title title title'
+        'main main main main main main'
+        'main main main main main main'
+        'leaderboard leaderboard leaderboard answers answers answers';
+
+        height: 100%;
+    }
+}
+@media screen and (max-width: 400px) {
+    .quiz_page {
+        grid-template-areas: 
+        'title title title title title title'
+        'main main main main main main'
+        'main main main main main main'
+        'leaderboard leaderboard leaderboard leaderboard leaderboard leaderboard'
+        'answers answers answers answers answers answers';
+
+        height: 100%;
+    }
+
+    .quiz_page .previous_questions {
+        overflow: unset !important;
+    }
+    .quiz_page .leaderboard {
+        overflow: unset !important;
+    }
+
+    body {
+        background-color: black;
+    }
+}
+
 
 .quiz_page .quiz {
     display: block;
@@ -311,6 +381,8 @@ a.goto_server:hover {
 .quiz_page .leaderboard {
     grid-area: leaderboard;
     background-color: rgb(15,15,15);
+    height: 100%;
+    overflow: hidden;
 }
 
 .quiz_page .title {
@@ -318,38 +390,54 @@ a.goto_server:hover {
     background-color: rgb(15,15,15);
 }
 
-.quiz_page .player_list {
-    grid-area: players;
+.quiz_page .previous_questions {
+    grid-area: answers;
     background-color: rgb(15,15,15);
+    height: 100%;
+    overflow: hidden;
 }
-.quiz_page .player_list .players, .quiz_page .leaderboard .positions {
+.quiz_page .previous_questions .questions, .quiz_page .leaderboard .positions {
     display: block;
     margin: auto;
     width: 100%;
     text-align: center;
+
+    position: relative;
+    height: 100%;
+    overflow-y: auto;
 }
-.quiz_page .player_list .players .player, .quiz_page .leaderboard .positions .player {
+.quiz_page .previous_questions .questions .question, .quiz_page .leaderboard .positions .player {
     position: relative;
     background-color: rgba(0,0,0,0.2);
     padding: 8px 0;
 }
-.quiz_page .player_list .players .player .selfIndicator {
-    display: block;
-    margin: auto;
-    position: absolute;
-    top:0;bottom:0;
-    left:10px;
-    height: fit-content;
-    font-size: 18px;
+.quiz_page .previous_questions .questions .question .number {
+    color: grey;
+    float: left;
+    margin-left: 5px;
 }
-.quiz_page .player_list .players .player .ownerIndicator {
-    display: block;
-    margin: auto;
-    position: absolute;
-    top:0;bottom:0;
-    right:10px;
-    height: fit-content;
-    font-size: 18px;
+.quiz_page .previous_questions .questions .question .result {
+    float: right;
+    margin-right: 15px;
+    background-color: grey;
+    border-radius: 50%;
+    height: 20px;
+    width: 20px;
+    text-align: center;
+}
+.quiz_page .previous_questions .questions .question .result i.fa {
+    vertical-align: middle;
+}
+.quiz_page .previous_questions .questions .question .result.correct { background-color: green; }
+.quiz_page .previous_questions .questions .question .result.incorrect { background-color: red; }
+.quiz_page .previous_questions .questions .question .guessedAnswer {
+    color: grey;
+    font-size: 10px;
+    text-align: center;
+}
+.quiz_page .previous_questions .questions .question .correctAnswer {
+    font-size: 14px;
+    text-align: center;
 }
 
 .quiz_page .leaderboard .positions .player .score {
@@ -363,6 +451,15 @@ a.goto_server:hover {
 .quiz_page .leaderboard .positions .player .accuracy {
     color: grey;
     font-size: 12px;
+}
+.quiz_page .leaderboard .positions .player .playerIndicator {
+    display: block;
+    margin: auto;
+    position: absolute;
+    top:0;bottom:0;
+    left:10px;
+    height: fit-content;
+    font-size: 18px;
 }
 
 .quiz_page div .title {

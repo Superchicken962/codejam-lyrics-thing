@@ -42,7 +42,8 @@ class GameServer {
             ownerId: ownerInfo.id || null,
 
             // Instantiate a question class just for the intellisense types. It will be replaced when the quiz starts anyway.
-            currentQuestion: new Question()
+            currentQuestion: new Question(),
+            previousQuestions: []
         };
         
         this.playerAnswers = {};
@@ -100,6 +101,9 @@ class GameServer {
                         }
                     }
                 }
+
+                // If there is current question, add it to the previous questions array before getting a new one.
+                if (this.state.currentQuestion) this.state.previousQuestions.push(this.state.currentQuestion);
 
                 this.state.currentQuestion = this.newQuestion();
             }

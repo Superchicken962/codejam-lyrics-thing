@@ -7,8 +7,17 @@ const SpotifyAPI = require("../apis/spotifyAPI");
 require("dotenv").config();
 const QueryString = require("qs");
 
-const clientSecret = process.env.SPOTIFY_API_CLIENT_SECRET;
-const clientId = process.env.SPOTIFY_API_CLIENT_ID;
+let clientSecret, clientId;
+
+if (!config["use-prod-api"]) {
+    // Use dev api keys for spotify (redirect to localhost)
+    clientSecret = process.env.SPOTIFY_API_CLIENT_SECRET;
+    clientId = process.env.SPOTIFY_API_CLIENT_ID;
+} else {
+    // Use production testing api keys for spotify (redirect to public ip).
+    clientSecret = process.env.PROD_SPOTIFY_API_CLIENT_SECRET;
+    clientId = process.env.PROD_SPOTIFY_API_CLIENT_ID;
+}
 
 router.get("/login", (req, res, next) => {
     // If user is already logged in, redirect them back home.
@@ -28,7 +37,7 @@ router.get("/login", (req, res, next) => {
         response_type: "code",
         client_id: clientId,
         scope: config.spotifyAPI.scope,
-        redirect_uri: config.spotifyAPI.redirectUri,
+        redirect_uri: (config["use-prod-api"]) ? config.spotifyAPI["prod-redirectUri"] : config.spotifyAPI.redirectUri,
         state: SessionTokens.get(req.sessionID) || generateRandomCode(16)
     }));
 });
@@ -50,7 +59,7 @@ router.get("/auth", async(req, res) => {
 
     const body = {
         code: req.query.code,
-        redirect_uri: config.spotifyAPI.redirectUri,
+        redirect_uri: (config["use-prod-api"]) ? config.spotifyAPI["prod-redirectUri"] : config.spotifyAPI.redirectUri,
         grant_type: "authorization_code"
     };
 
@@ -64,7 +73,7 @@ router.get("/auth", async(req, res) => {
     const response = await request.json();
 
     if (request.status !== 200) {
-        console.error(`Error fetching token from Spotify API: ${response.error}`);
+        console.error(`Error fetching token from Spotify API: ${response.error} (${response.error_description})`);
         res.redirect("/spotify/login?error");
         return;
     }

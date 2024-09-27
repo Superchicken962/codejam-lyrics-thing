@@ -46,7 +46,7 @@ let currentQuestionId = "";
 
 function updateGame(status) {
     const elements = {
-        playerList: document.querySelector(".player_list .players"),
+        previousQuestions: document.querySelector(".previous_questions .questions"),
         leaderboard: document.querySelector(".leaderboard .positions"),
         quiz: {
             lyrics: document.querySelector(".quiz .lyrics_display"),
@@ -60,23 +60,49 @@ function updateGame(status) {
         }
     };
 
-    // -- Player List --
-
-    let playersListHtml = "";
-
-    for (const player of status.state.players) {
-        playersListHtml += `
-            <div class="player">
-                ${(player.id === CURRENT_USER_ID) ? `<i class="selfIndicator fa fa-user" title="This is you!"></i>` : ""}
-                <p>${player.username}</p>
-                ${(status.state.ownerId === player.id) ? `<i class="ownerIndicator fa fa-crown" title="Server owner"></i>` : ""}
-            </div>
-        `;
-    }
+    // -- Previous Questions/Answers List --
 
     const me = status.state.players.find(player => player.id === CURRENT_USER_ID);
 
-    elements.playerList.innerHTML = playersListHtml;
+    let previousQuestionsHtml = "";
+
+    // Essentially just reverse the questions - show the last question as first in the list.
+    const previousQuestions = status.state.previousQuestions.sort((a,b) => b.num - a.num);
+
+    for (const question of previousQuestions) {
+        const playerSelectedAnswer = question.playerAnswers.find(user => user.id === CURRENT_USER_ID);
+        console.log(question);
+
+        let answerResult = `<i class="fa fa-xmark"></i>`;
+        let answer = "incorrect";
+        let guessedAnswer = `<br><span class="guessedAnswer">You Guessed: ${question.answers[playerSelectedAnswer?.answer]?.songName}</span>`;
+
+        if (!playerSelectedAnswer) {
+            answerResult = "-";
+            answer = "none";
+            guessedAnswer = "";
+        }
+
+        const correctAnswer = question.chosenSong?.answer;
+
+        // Check if player's choice matches the correct answer.
+        if (playerSelectedAnswer?.answer === correctAnswer) {
+            answerResult = `<i class="fa fa-check"></i>`;
+            answer = "correct";
+            guessedAnswer = "";
+        }
+        
+        previousQuestionsHtml += `
+            <div class="question">
+                <span class="number">#${question.num}</span>
+                <span class="result ${answer}">${answerResult}</span>
+                <span class="correctAnswer">${question.answers[correctAnswer].songName}</span>
+                ${guessedAnswer}
+            </div>
+        `;   
+    }
+
+    elements.previousQuestions.innerHTML = previousQuestionsHtml;
 
     // -- Leaderboard --
 
@@ -93,9 +119,16 @@ function updateGame(status) {
     for (const position of leaderboard) {
         const accuracy = ((position.score / status.state.currentQuestion.num)*100).toFixed(1);
         
+        // Show a user icon to indicate who the current player is - If the player is the owner, show a crown instead.
+        let playerIndicator = (position.id === CURRENT_USER_ID) ? `<i class="playerIndicator fa fa-user" title="This is you!"></i>` : "";
+        if (status.state.ownerId === position.id) {
+            playerIndicator = `<i class="playerIndicator fa fa-crown" title="Server owner"></i>`;
+        }
+
         leaderboardHtml += `
             <div class="player">
                 <p>
+                    ${playerIndicator}
                     <span class="score">${position.score}</span>
                     <span class="name">${position.username}</span>
                     <br>
@@ -175,6 +208,7 @@ function updateGame(status) {
             elements.quiz.lyrics.innerHTML = `
                 <p>${resp.lyrics}</p>
                 <p class="copyright">${resp.copyrightNote}</p>
+                <script type="text/javascript" src="${resp.scriptTracking}">
             `;
             elements.quiz.lyrics.show();
         });
