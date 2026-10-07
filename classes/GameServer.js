@@ -1,4 +1,5 @@
 const { generateRandomCode } = require("../utility");
+const { getLyricsForSong } = require("../web/apis/lyricsAPI");
 const Player = require("./Player");
 const Question = require("./type-definitions/Question");
 const gameSocket = require("../web/sockets").game;
@@ -183,6 +184,9 @@ class GameServer {
             }
         };
         obj.chosenSong.answer = songAnswerPosition;
+        this.getLyrics(chosenSong.name, chosenSong.artists[0].name, chosenSong.album?.name).then(lyrics => {
+            obj.chosenSong.lyrics = lyrics;
+        });
 
         // Remove the slot from the available slots so then it won't be refilled.
         answerSlots.splice(songAnswerPositionIndex, 1);
@@ -241,6 +245,20 @@ class GameServer {
         // Set the user score as it's existing value or 0, then add 1.
         this.scores[id] = (this.scores[id] || 0);
         this.scores[id] += 1;
+    }
+
+    /**
+     * Fetches lyrics from API or cache if cached.
+     * 
+     * @param { String } song
+     * @param { String } artist
+     * @param { String } album
+     * @returns { Promise<String[]> } Array of lyrics 
+     */
+    getLyrics = async(song, artist, album) => {
+        // const lyricsData = await getLyricsForSong(song, artist, album);
+        // return lyricsData.lyrics;
+        return [];
     }
 }
 

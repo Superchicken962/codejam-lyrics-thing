@@ -42,6 +42,8 @@ createServerForm.addEventListener("submit", async function(ev) {
         return;
     }
 
+    const gameMode = createServerForm.querySelector("#game_mode .option.selected")?.getAttribute("data-value") || "audio";
+
     // Make the POST request since there were no errors.
     const headers = {"Content-type": "application/json"};
     const body = {
@@ -49,7 +51,8 @@ createServerForm.addEventListener("submit", async function(ev) {
         "description": serverDesc,
         "maxPlayers": maxPlayers,
         "playlistUrl": spotifyFormValues.playlistUrl,
-        "questionLength": (parseInt(questionLength) || 60)*1000
+        "questionLength": (parseInt(questionLength) || 60)*1000,
+        "gameMode": gameMode
     };
 
     const requestCreation = await fetch("/play/multiplayer/new", {"method": "POST", headers, body: JSON.stringify(body)});
@@ -103,3 +106,24 @@ chooseSpotifyBtn.addEventListener("click", async() => {
 selectQuestionTime.addEventListener("input", function() {
     questionTimePreviewElement.textContent = `${this.value}s`;
 });
+
+function initSelectOptions() {
+    const select = (el) => {
+        const parent = el.parentElement;
+        parent.querySelectorAll(".selectOptions .option").forEach(el => el.classList.remove("selected"));
+        el.classList.add("selected");
+
+        const hintText = document.querySelector(`.selectOptionHint[for='${parent.id}']`);
+        if (hintText) hintText.textContent = el.getAttribute("data-hint");
+    }
+
+    for (const opt of document.querySelectorAll(".selectOptions .option")) {
+        opt.addEventListener("click", () => {
+            select(opt);
+        });
+    }
+
+    // Preselect all options to show text.
+    document.querySelectorAll(".selectOptions .option.selected").forEach(el => select(el));
+}
+initSelectOptions();

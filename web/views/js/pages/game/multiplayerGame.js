@@ -23,6 +23,7 @@ function askSocket(event, data = {}) {
     return new Promise((resolve) => {
         if (!data.id) data.id = generateRandomCode(16);
         data.message = event;
+        data.server = { code: SERVER_CODE };
 
         messagesAwaitingResponses[data.id] = resolve;
         socket.emit("askSocket", data);
@@ -71,7 +72,7 @@ function updateGame(status) {
 
     for (const question of previousQuestions) {
         const playerSelectedAnswer = question.playerAnswers.find(user => user.id === CURRENT_USER_ID);
-        console.log(question);
+        // console.log(question);
 
         let answerResult = `<i class="fa fa-xmark"></i>`;
         let answer = "incorrect";
@@ -117,7 +118,7 @@ function updateGame(status) {
     const showAccuracy = true;
 
     for (const position of leaderboard) {
-        const accuracy = ((position.score / status.state.currentQuestion.num)*100).toFixed(1);
+        const accuracy = ((position.score / (status.state.currentQuestion.num-1))*100).toFixed(1);
         
         // Show a user icon to indicate who the current player is - If the player is the owner, show a crown instead.
         let playerIndicator = (position.id === CURRENT_USER_ID) ? `<i class="playerIndicator fa fa-user" title="This is you!"></i>` : "";
@@ -204,7 +205,7 @@ function updateGame(status) {
             });
         }
 
-        askSocket("song.get.randomLyrics", {isrc: question.answers[question.chosenSong.answer].isrc }).then(resp => {
+        askSocket("song.get.randomLyrics", { isrc: question.answers[question.chosenSong.answer].isrc }).then(resp => {
             elements.quiz.lyrics.innerHTML = `
                 <p>${resp.lyrics}</p>
                 <p class="copyright">${resp.copyrightNote}</p>

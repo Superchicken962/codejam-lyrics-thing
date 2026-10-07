@@ -16,6 +16,13 @@
             <span class="item"><label for="server_name">Server Name</label><br><textarea id="server_name" class="server_name" placeholder="Name..." maxlength="75" required></textarea></span>
             <span class="item"><label for="server_description">Server Description</label><br><textarea id="server_description" class="server_description" placeholder="Description..." maxlength="120" required></textarea></span>
             <span class="item"><label for="max_players">Max Players</label><br><input id="max_players" class="max_players" type="number" min="2" max="8" value="2" required/></span>
+            <span class="item"><label for="game_mode">Game Mode</label><br>
+                <div class="selectOptions" id="game_mode">
+                    <div class="option" data-value="lyrics" data-hint="Guess the song based on random lyrics">Lyrics</div>
+                    <div class="option selected" data-value="audio" data-hint="Guess the song based on an audio sample">Audio</div>
+                </div>
+                <p class="reminder selectOptionHint" for="game_mode">-</p>
+            </span>
             <span class="item"><label for="question_length">Question Time</label>
                 <br>
                 Selected time: <span class="question_length_selected_preview">60s</span>

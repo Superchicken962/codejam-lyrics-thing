@@ -636,3 +636,25 @@ a.goto_server:hover {
     color: grey;
     font-size: 10px;
 }
+
+.selectOptions {
+    display: block;
+    margin: auto;
+}
+.selectOptions .option {
+    display: inline-block;
+    background-color: rgba(0,0,0,0.3);
+    padding: 6px 12px;
+}
+.selectOptions .option:hover {
+    background-color: rgba(8, 72, 97, 0.2);
+    cursor: pointer;
+}
+.selectOptions .option.selected {
+    background-color: rgba(8, 72, 97, 0.6);
+}
+
+.reminder {
+    font-size: 14px;
+    color: grey;
+}

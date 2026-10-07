@@ -1,7 +1,6 @@
 const { Namespace } = require("socket.io");
 const { serverManager } = require("./data");
 const GameServer = require("../classes/GameServer");
-const musixmatch = require("../web/apis/musixmatch");
 
 /**
  * @param { Namespace } io 
@@ -45,7 +44,7 @@ module.exports = function(io) {
                         return;
                     }
 
-                    let server = serverManager.findServerByCode(data.server);
+                    let server = serverManager.findServerByCode(data.server?.code || data.server);
                     if (!server) {
                         reply({"status": 404});
                         return;
@@ -62,27 +61,27 @@ module.exports = function(io) {
                     break;
 
                 case "song.get.randomLyrics":
-                    if (!data.isrc) {
-                        reply({"status": 400});
+                    const findServer = serverManager.findServerByCode(data.server?.code);
+                    if (!findServer) {
+                        reply({"status": 404});
                         return;
                     }
 
-                    const lyricsData = await musixmatch.GET("track.lyrics.get", [
-                        {"name": "track_isrc", "value": data.isrc}
-                    ]);
+                    // const currentQuestion = findServer.state.currentQuestion;
+                    // const songInfo = currentQuestion.answers[currentQuestion.chosenSong.answer];
 
-                    // Split into lines, and remove empty lines and ones with just "...".
-                    let lyrics = lyricsData.message?.body?.lyrics?.lyrics_body?.split("\n");
-                    lyrics = lyrics.filter(line => line !== "" && line !== "...");
+                    const lyricsData = {};
+                    const lyrics = (findServer.state.currentQuestion.chosenSong.lyrics || [])
+                        .filter(line => line !== "" && line !== "...");
 
                     // Remove the last two results. (Musixmatch copyright stuff).
-                    lyrics.pop();
-                    lyrics.pop();
+                    // lyrics.pop();
+                    // lyrics.pop();
 
                     const randomLineIndex = Math.floor(Math.random() * lyrics.length);
-                    randomLyrics = lyrics[randomLineIndex];
+                    const randomLyrics = lyrics[randomLineIndex];
 
-                    reply({"status": 200, "lyrics": randomLyrics, "copyrightNote": lyricsData.message?.body?.lyrics?.lyrics_copyright, "scriptTracking": lyricsData.message?.body?.lyrics?.script_tracking_url, "pixelTracking": lyricsData.message?.body?.lyrics?.pixel_tracking_url});
+                    reply({"status": 200, "lyrics": randomLyrics, "copyrightNote": lyricsData.message?.body?.lyrics?.lyrics_copyright || "", "scriptTracking": lyricsData.message?.body?.lyrics?.script_tracking_url, "pixelTracking": lyricsData.message?.body?.lyrics?.pixel_tracking_url});
                     break;
             }
         });
