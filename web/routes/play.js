@@ -27,7 +27,7 @@ router.get("/multiplayer/new", (req, res) => {
 });
 
 router.post("/multiplayer/new", requireLoggedInAPI, async(req, res) => {
-    const { name, description, maxPlayers, playlistUrl, questionLength } = req.body;
+    const { name, description, maxPlayers, playlistUrl, questionLength, gameMode } = req.body;
 
     const noValue = (!name || !description || !maxPlayers);
     const outOfRange = (name?.length > 75 || description?.length > 120 || !(maxPlayers >= 2 && maxPlayers <= 8))
@@ -70,7 +70,7 @@ router.post("/multiplayer/new", requireLoggedInAPI, async(req, res) => {
 
     webSocket.ask("server.new", {
         server: {
-            name, description, maxPlayers, questionLength
+            name, description, maxPlayers, questionLength, gameMode
         },
         owner: {
             username: req.session.user?.account?.display_name,
@@ -80,7 +80,7 @@ router.post("/multiplayer/new", requireLoggedInAPI, async(req, res) => {
     }).then(resp => {
         
         if (resp.success) {
-            res.status(200).json({});
+            res.status(200).json({ serverCode: resp.serverCode });
         } else {
             res.status(500).json(errors.api.buildError(500, "Error Creating Server", resp.reason));
         }

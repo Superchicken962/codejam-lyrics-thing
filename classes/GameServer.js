@@ -18,8 +18,9 @@ class GameServer {
      * @param { Object[] } playlistInfo.songs - List of songs in the playlist.
      * @param { number } questionLength - Time (in miliseconds) that each question should stay for.
      * @param { boolean } isPrivate - Should server be private? (Hidden from server browser).
+     * @param { "lyrics" | "audio" } gameMode - Game mode for the server.
      */
-    constructor(name, description, maxPlayers = 2, ownerInfo, playlistInfo, questionLength = 60000, isPrivate = false) {
+    constructor(name, description, maxPlayers = 2, ownerInfo, playlistInfo, questionLength = 60000, isPrivate = false, gameMode = "audio") {
         this.name = name;
         this.description = description;
         this.maxPlayers = maxPlayers;
@@ -27,6 +28,7 @@ class GameServer {
         this.private = isPrivate;
         this.code = generateRandomCode(8);
         this.scores = {};
+        this.gameMode = gameMode || "audio";
         
         this.playlistId = playlistInfo.id;
         this.songs = playlistInfo.songs;

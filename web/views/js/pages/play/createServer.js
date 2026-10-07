@@ -67,8 +67,15 @@ createServerForm.addEventListener("submit", async function(ev) {
         return;
     }
 
-    // TODO: Send player to lobby page.
-    window.location = "/play/multiplayer";
+    // If server code is not given, redirect to menu. Otherwise go directly to lobby.
+    if (!responseData.serverCode) {
+        window.location = "/play/multiplayer";
+        return;
+    }
+
+    // Make request to actually join the lobby, then redirect to lobby page. 
+    await fetch(`/play/multiplayer/join/${responseData.serverCode}`, {"method": "POST"});
+    window.location = `/game/${responseData.serverCode}`;
 });
 
 chooseSpotifyBtn.addEventListener("click", async() => {

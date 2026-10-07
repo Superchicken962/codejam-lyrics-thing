@@ -26,10 +26,13 @@ module.exports = function(io) {
                         return;
                     }
 
-                    const server = new GameServer(data.server.name, data.server.description, data.server.maxPlayers || 2, data.owner, data.playlistInfo, (data.server.questionLength || 60000));
-                    serverManager.newServer(server);
+                    const gameMode = data.gameMode || "audio";
+                    const isPrivate = !!data.private && data.private != "false";
 
-                    reply({"success": true});
+                    const server = new GameServer(data.server.name, data.server.description, data.server.maxPlayers || 2, data.owner, data.playlistInfo, (data.server.questionLength || 60000), isPrivate, gameMode);
+                    const success = serverManager.newServer(server);
+
+                    reply({success, "serverCode": server?.code});
                     break;
 
                 case "server.join":
