@@ -1,5 +1,7 @@
 # Code jam project - lyrics stuff
 
+Created for a university code jam in September 2024. Updated because I wanted to revisit the project!
+
 > [!IMPORTANT]  
 > Requires Node.js (atleast v20.9.0) to run
 
