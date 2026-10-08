@@ -71,11 +71,40 @@ class TextEntryQuestion extends QuestionAnswerFormat {
      */
     showAnswers(answers, submitAnswer) {
         this.#element.innerHTML = `
-            <input class="test" list="questionOptions"/>
+            <form>
+                <input class="answer" list="questionOptions"/>
+            </form>
 
-            <datalist id="questionOptions">
-                ${ALL_SONGS.map(song => `<option value="${song}"></option>`)}
-            </datalist>
+            <datalist id="questionOptions"></datalist>
         `;
+
+        const form = this.#element.querySelector("form");
+        const inp = form.querySelector("input.answer");
+
+        form.addEventListener("submit", (ev) => {
+            ev.preventDefault();
+            
+            console.log(inp.value);
+        });
+
+        const dataList = this.#element.querySelector("#questionOptions");
+        const MAX_ANSWERS_TO_SHOW = 5;
+
+        inp.addEventListener("input", () => {
+            const val = inp.value.toLowerCase();
+
+            dataList.innerHTML = "";
+            if (!val) return;
+
+            // Search array of songs with value, and then only show n results.
+            const matchingSongs = ALL_SONGS.filter(s => s.name.toLowerCase().includes(val) || s.artist.toLowerCase().includes(val)).slice(0, MAX_ANSWERS_TO_SHOW);
+            for (const song of matchingSongs) {
+                const opt = document.createElement("option");
+                opt.setAttribute("value", song.name);
+                opt.textContent = song.artist;
+
+                dataList.appendChild(opt);
+            }
+        });
     }
 }

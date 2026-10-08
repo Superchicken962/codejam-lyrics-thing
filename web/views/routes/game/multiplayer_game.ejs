@@ -64,7 +64,11 @@
     const SERVER_CODE = "<%= server.code%>";
     const CURRENT_USER_ID = "<%= session.user?.account?.id %>";
     const GAME_MODE = "<%= server.gameMode %>";
-    const ALL_SONGS = JSON.parse(`<%- JSON.stringify(server.songs.map(s => encodeURIComponent(s.name))) %>`).map(s => decodeURIComponent(s));
+
+    "<%# Encode uri component to ensure quotations do not break JSON parsing. %>"
+    const ALL_SONGS = JSON.parse(`<%- JSON.stringify(server.songs.map(s => {
+        return { name: encodeURIComponent(s.name), artist: encodeURIComponent(s.artists[0].name) }
+    })) %>`).map(s => { s.name = decodeURIComponent(s.name); s.artist = decodeURIComponent(s.artist); return s; });
 </script>
 <script src="/js/AudioManager.js"></script>
 <script src="/js/pages/game/QuestionAnswerFormat"></script>
