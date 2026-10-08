@@ -50,8 +50,9 @@ const audio = (GAME_MODE == "audio") ? new AudioManager() : null;
 let questionAnswers = null;
 
 function updateGame(status) {
+    const qType = status.state.settings.questionType;
     if (!questionAnswers) {
-        setQuestionType(status.state.settings.questionType);
+        setQuestionType(qType);
     }
 
     const elements = {
@@ -87,9 +88,12 @@ function updateGame(status) {
         const playerSelectedAnswer = question.playerAnswers.find(user => user.id === CURRENT_USER_ID);
         // console.log(question);
 
+        // Only show the exact answer text if the actual question type is text entry.
+        const wrongAnswer = question.answers[playerSelectedAnswer?.answer]?.songName || ((qType == "text") ?playerSelectedAnswer?.answer : "N/A");
+
         let answerResult = `<i class="fa fa-xmark"></i>`;
         let answer = "incorrect";
-        let guessedAnswer = `<br><span class="guessedAnswer">You Guessed: ${question.answers[playerSelectedAnswer?.answer]?.songName || playerSelectedAnswer?.answer}</span>`;
+        let guessedAnswer = `<br><span class="guessedAnswer">You Guessed: ${wrongAnswer}</span>`;
 
         if (!playerSelectedAnswer) {
             answerResult = "-";
