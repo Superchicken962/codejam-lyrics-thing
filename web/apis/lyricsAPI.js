@@ -15,19 +15,22 @@ require("dotenv").config();
  * @returns { Promise<LyricsObject> }
  */
 async function getLyricsForSong(artist, song, album) {
-    const resp = await genius.getLyrics({
-        apiKey: process.env.GENIUS_API_ACCESS_TOKEN,
-        artist,
-        title: song,
-        optimizeQuery: true
-    });
+    // const resp = await genius.getLyrics({
+    //     apiKey: process.env.GENIUS_API_ACCESS_TOKEN,
+    //     artist,
+    //     title: song,
+    //     optimizeQuery: true
+    // });
 
-    const text = resp.split("[Verse 1]")[1];
-    const lyrics = text?.split("\n")?.filter(l => l);
+    // const text = resp.split("[Verse 1]")[1];
+    // const lyrics = text?.split("\n")?.filter(l => l);
 
-    console.log(lyrics);
+    // console.log(lyrics);
 
-    return { lyrics };
+    // return { lyrics };
+
+    // Return nothing at the moment until a suitable lyrics solution can be implemented.
+    return { lyrics: [] };
 }
 
 module.exports = {

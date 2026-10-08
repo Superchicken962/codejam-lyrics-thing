@@ -153,7 +153,9 @@ class GameServer {
             },
             "chosenSong": {
                 "answer": null,
-                "lyrics": ""
+                "lyrics": [],
+                "randomLyric": null,
+                "audioSampleURL": null
             },
             "expiresAt": questionExpiryDate.getTime(),
             "expiryTime": this.state.settings.questionTime || 60000,
@@ -186,9 +188,23 @@ class GameServer {
             }
         };
         obj.chosenSong.answer = songAnswerPosition;
-        this.getLyrics(chosenSong.name, chosenSong.artists[0].name, chosenSong.album?.name).then(lyrics => {
-            obj.chosenSong.lyrics = lyrics;
-        });
+
+        switch (this.gameMode) {
+            // For lyrics game mode, fetch lyrics and assign in data.
+            case "lyrics":
+                this.getLyrics(chosenSong.name, chosenSong.artists[0].name, chosenSong.album?.name).then(lyrics => {
+                    obj.chosenSong.lyrics = lyrics || [];
+        
+                    // Pick a random lyric for this question.
+                    const randIndex = Math.floor(Math.random() * obj.chosenSong.lyrics.length);
+                    obj.chosenSong.randomLyric = obj.chosenSong.lyrics[randIndex] || "";
+                });
+                break;
+
+            case "audio":
+                obj.chosenSong.audioSampleURL = "";
+                break;
+        }
 
         // Remove the slot from the available slots so then it won't be refilled.
         answerSlots.splice(songAnswerPositionIndex, 1);
@@ -258,9 +274,8 @@ class GameServer {
      * @returns { Promise<String[]> } Array of lyrics 
      */
     getLyrics = async(song, artist, album) => {
-        // const lyricsData = await getLyricsForSong(song, artist, album);
-        // return lyricsData.lyrics;
-        return [];
+        const lyricsData = await getLyricsForSong(song, artist, album);
+        return lyricsData.lyrics;
     }
 }
 

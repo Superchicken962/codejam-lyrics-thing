@@ -17,3 +17,10 @@ HTMLElement.prototype.hide = function() {
 HTMLElement.prototype.show = function() {
     this.style.display = "block";
 }
+
+HTMLElement.prototype.classHide = function() {
+    this.classList.add("hidden");
+}
+HTMLElement.prototype.classShow = function() {
+    this.classList.remove("hidden");
+}

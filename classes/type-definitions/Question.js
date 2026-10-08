@@ -12,7 +12,9 @@ class Question {
      * @param { string } answers.D - Answer D.
      * @param { Object } chosenSong - Chosen song.
      * @param { string } chosenSong.answer - The answer that is correct.
-     * @param { string } chosenSong.lyrics - The lyrics to show.
+     * @param { string[] } chosenSong.lyrics - All song lyrics.
+     * @param { string } chosenSong.randomLyric - The random lyric to show.
+     * @param { string } chosenSong.audioSampleURL - URL of audio sample of the song - null if game mode is not audio.
      * @param { number } expiresAt - Timestamp - when the question ends.
      * @param { number } expiryTime - Time (in miliseconds) that the question will have until it expires (ie. 60000).
      * @param { Object[] } playerAnswers - List of players with their selected answer.

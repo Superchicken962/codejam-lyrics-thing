@@ -22,6 +22,10 @@
             </div>
             <div class="messages"></div>
             <div class="lyrics_display"></div>
+            <div class="audio hidden">
+                <div class="audio_display"></div>
+                <div class="volume_slider"></div>
+            </div>
             <div class="question_num"></div>
             <div class="questions"></div>
             <% if (amIOwner) { %>
@@ -59,6 +63,8 @@
     const SOCKET_URL = "<%= socketAddress%>";
     const SERVER_CODE = "<%= server.code%>";
     const CURRENT_USER_ID = "<%= session.user?.account?.id %>";
+    const GAME_MODE = "<%= server.gameMode %>";
 </script>
+<script src="/js/AudioManager.js"></script>
 <script src="/js/pages/game/multiplayerGame" type="module"></script>
 </html>

@@ -632,7 +632,7 @@ a.goto_server:hover {
     margin-top: 25px;
 }
 
-.quiz .lyrics_display .copyright {
+.quiz .lyrics_display .copyright, .quiz .audio_display .note {
     color: grey;
     font-size: 10px;
 }
@@ -657,4 +657,37 @@ a.goto_server:hover {
 .reminder {
     font-size: 14px;
     color: grey;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.audio {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    margin: auto;
+    width: 60%;
+    height: fit-content;
+    min-height: 100px;
+    background-color: rgb(200,200,200);
+    padding: 2px 0;
+    border-radius: 10px;
+    font-size: 24px;
+    text-align: center;
+    margin-top: 25px;
+}
+.audio .audio_display {
+    color: black;
+}
+.audio .volume_slider {
+    display: block;
+    position: absolute;
+    width: 15px;
+    height: 15px;
+    background-color: black;
+    top: 10px;
+    left: 10px;
 }

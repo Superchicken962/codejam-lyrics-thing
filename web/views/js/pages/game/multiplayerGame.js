@@ -11,7 +11,6 @@ socket.on("connect", () => {
         }
     });
 });
-
 const messagesAwaitingResponses = {};
 
 /**
@@ -45,6 +44,8 @@ socket.on("server.state", updateGame);
 // Store the current question id so we can check if there is an new question each state update.
 let currentQuestionId = "";
 
+const audio = (GAME_MODE == "audio") ? new AudioManager() : null;
+
 function updateGame(status) {
     const elements = {
         previousQuestions: document.querySelector(".previous_questions .questions"),
@@ -57,7 +58,12 @@ function updateGame(status) {
                 container: document.querySelector(".quiz .progress_bar"),
                 bar: document.querySelector(".quiz .progress_bar .bar")
             },
-            questionNum: document.querySelector(".quiz .question_num")
+            questionNum: document.querySelector(".quiz .question_num"),
+            audio: {
+                container: document.querySelector(".audio"),
+                volume: document.querySelector(".audio .volume_slider"),
+                display: document.querySelector(".audio .audio_display")
+            }
         }
     };
 
@@ -205,14 +211,30 @@ function updateGame(status) {
             });
         }
 
-        askSocket("song.get.randomLyrics", { isrc: question.answers[question.chosenSong.answer].isrc }).then(resp => {
-            elements.quiz.lyrics.innerHTML = `
-                <p>${resp.lyrics}</p>
-                <p class="copyright">${resp.copyrightNote}</p>
-                <script type="text/javascript" src="${resp.scriptTracking}">
-            `;
-            elements.quiz.lyrics.show();
-        });
+        console.log(GAME_MODE, question.chosenSong);
+
+        switch (GAME_MODE) {
+            case "lyrics":
+                elements.quiz.lyrics.innerHTML = `
+                    <p>${question.chosenSong.randomLyric}</p>
+                    <p class="copyright">${""}</p>
+                `;
+                elements.quiz.lyrics.show();
+                break;
+
+            case "audio":
+                elements.quiz.audio.container.classShow();
+
+                audio.load(question.chosenSong.audioSampleURL);
+                audio.play().catch(e => {
+                    // If the song fails to play, show a message and show the correct answer.
+                    elements.quiz.audio.display.innerHTML = `
+                        <p>This song could not be played.</p>
+                        <p class="note">${question.answers[question.chosenSong.answer].songName}</p>
+                    `;
+                });
+                break;
+        }
 
     } else {
         elements.quiz.questions.innerHTML = "";
