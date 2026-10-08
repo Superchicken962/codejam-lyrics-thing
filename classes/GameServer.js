@@ -1,4 +1,5 @@
 const { generateRandomCode } = require("../utility");
+const { getTrackAudioSample } = require("../web/apis/deezerAPI");
 const { getLyricsForSong } = require("../web/apis/lyricsAPI");
 const Player = require("./Player");
 const Question = require("./type-definitions/Question");
@@ -202,7 +203,10 @@ class GameServer {
                 break;
 
             case "audio":
-                obj.chosenSong.audioSampleURL = "";
+                getTrackAudioSample(chosenSong.external_ids?.isrc).then(url => {
+                    obj.chosenSong.audioSampleURL = url;
+                    this.broadcastState();
+                });
                 break;
         }
 

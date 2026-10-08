@@ -43,6 +43,7 @@ socket.on("server.state", updateGame);
 
 // Store the current question id so we can check if there is an new question each state update.
 let currentQuestionId = "";
+let tryingToPlayAudio = false;
 
 const audio = (GAME_MODE == "audio") ? new AudioManager() : null;
 
@@ -175,10 +176,50 @@ function updateGame(status) {
 
     const hasAnswered = !!question.playerAnswers?.find(player => player.id === me.id);
 
+    const correctAnswerSong = question.answers[question.chosenSong.answer].songName;
+
+    switch (GAME_MODE) {
+        case "lyrics":
+            // If lyrics are unavailable, show a message and give the answer.
+            elements.quiz.lyrics.innerHTML = `
+                <p>${question.chosenSong.randomLyric || "<i>Lyrics Unavailable</i>"}</p>
+                <p class="copyright">${question.chosenSong.randomLyric ? "" : correctAnswerSong}</p>
+            `;
+            elements.quiz.lyrics.show();
+            break;
+
+        case "audio":
+            // Don't update if audio is playing.
+            if (audio.isPlaying() && tryingToPlayAudio) break;
+            
+            elements.quiz.audio.container.classShow();
+
+            tryingToPlayAudio = true;
+
+            audio.load(question.chosenSong.audioSampleURL);
+            audio.play(() => {
+                // TODO: Add audio waveform thingy and volume slider.
+                
+            }).catch(e => {
+                // TODO: Maybe add a timeout because this will error if a blank url is loaded (which will happen inbetween loads).
+
+                // If the song fails to play, show a message and show the correct answer.
+                // elements.quiz.audio.display.innerHTML = `
+                //     <p>This song could not be played.</p>
+                //     <p class="note">${correctAnswerSong}</p>
+                // `;
+
+                tryingToPlayAudio = false;
+            });
+            break;
+    }
+
     if (!hasAnswered) {
         // Do not update again if the question is the same - there is nothing new to add, and it just messes up click listeners and hover effects.
         if (question.id === currentQuestionId) return;
         currentQuestionId = question.id;
+
+        newQuestion(question);
 
         elements.quiz.messages.innerHTML = "";
         elements.quiz.messages.hide();
@@ -211,31 +252,6 @@ function updateGame(status) {
             });
         }
 
-        console.log(GAME_MODE, question.chosenSong);
-
-        switch (GAME_MODE) {
-            case "lyrics":
-                elements.quiz.lyrics.innerHTML = `
-                    <p>${question.chosenSong.randomLyric}</p>
-                    <p class="copyright">${""}</p>
-                `;
-                elements.quiz.lyrics.show();
-                break;
-
-            case "audio":
-                elements.quiz.audio.container.classShow();
-
-                audio.load(question.chosenSong.audioSampleURL);
-                audio.play().catch(e => {
-                    // If the song fails to play, show a message and show the correct answer.
-                    elements.quiz.audio.display.innerHTML = `
-                        <p>This song could not be played.</p>
-                        <p class="note">${question.answers[question.chosenSong.answer].songName}</p>
-                    `;
-                });
-                break;
-        }
-
     } else {
         elements.quiz.questions.innerHTML = "";
 
@@ -243,7 +259,6 @@ function updateGame(status) {
         elements.quiz.lyrics.hide();
         elements.quiz.messages.innerHTML = "<h2>You have chosen an answer!</h2><h4>Wait for everyone else to answer, or for the timer to end.</h4>";
     }
-
 }
 
 function guessAnswer(answer) {
@@ -254,4 +269,13 @@ function guessAnswer(answer) {
             return;
         }
     });
+}
+
+function newQuestion() {
+    // Handle gamemode specific things upon new question - i.e. pause audio.
+    switch (GAME_MODE) {
+        case "audio":
+            audio.reset();
+            break;
+    }
 }

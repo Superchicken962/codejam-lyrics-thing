@@ -26,7 +26,7 @@ module.exports = function(io) {
                         return;
                     }
 
-                    const gameMode = data.gameMode || "audio";
+                    const gameMode = data.server.gameMode || "audio";
                     const isPrivate = !!data.private && data.private != "false";
 
                     const server = new GameServer(data.server.name, data.server.description, data.server.maxPlayers || 2, data.owner, data.playlistInfo, (data.server.questionLength || 60000), isPrivate, gameMode);
