@@ -433,6 +433,7 @@ a.goto_server:hover {
 }
 .quiz_page .previous_questions .questions .question .result.correct { background-color: green; }
 .quiz_page .previous_questions .questions .question .result.incorrect { background-color: red; }
+.quiz_page .previous_questions .questions .question .result.invalid { background-color: rgb(56, 56, 56); }
 .quiz_page .previous_questions .questions .question .guessedAnswer {
     color: grey;
     font-size: 10px;

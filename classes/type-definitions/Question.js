@@ -15,6 +15,7 @@ class Question {
      * @param { string[] } chosenSong.lyrics - All song lyrics.
      * @param { string } chosenSong.randomLyric - The random lyric to show.
      * @param { string } chosenSong.audioSampleURL - URL of audio sample of the song - null if game mode is not audio.
+     * @param { boolean } chosenSong.invalid - Is song invalid (only really if the audio sample was not found, and should be skipped)
      * @param { number } expiresAt - Timestamp - when the question ends.
      * @param { number } expiryTime - Time (in miliseconds) that the question will have until it expires (ie. 60000).
      * @param { Object[] } playerAnswers - List of players with their selected answer.

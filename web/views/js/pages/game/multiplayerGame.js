@@ -99,6 +99,13 @@ function updateGame(status) {
             answer = "correct";
             guessedAnswer = "";
         }
+
+        // If the question was invalid, mark it with a slash.
+        if (question.chosenSong.invalid) {
+            answerResult = `/`;
+            answer = "invalid";
+            guessedAnswer = "";
+        }
         
         previousQuestionsHtml += `
             <div class="question">
@@ -199,7 +206,7 @@ function updateGame(status) {
             audio.load(question.chosenSong.audioSampleURL);
             audio.play(() => {
                 // TODO: Add audio waveform thingy and volume slider.
-                
+
             }).catch(e => {
                 // TODO: Maybe add a timeout because this will error if a blank url is loaded (which will happen inbetween loads).
 

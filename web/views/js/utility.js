@@ -24,3 +24,15 @@ HTMLElement.prototype.classHide = function() {
 HTMLElement.prototype.classShow = function() {
     this.classList.remove("hidden");
 }
+
+function shuffleArray(arr) {
+    if (!Array.isArray(arr)) return;
+
+    let currentIndex = arr.length;
+    while (currentIndex != 0) {
+        let randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex--;
+
+        [arr[currentIndex], arr[randomIndex]] = [arr[randomIndex], arr[currentIndex]];
+    }
+}

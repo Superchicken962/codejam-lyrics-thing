@@ -34,7 +34,7 @@ async function getTrackAudioSample(isrc) {
         if (!data.preview) return "";
 
         cache.set(isrc, {
-            sampleURL: data.preview,
+            sampleURL: data.preview
         });
 
         return data.preview;

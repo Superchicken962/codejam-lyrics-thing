@@ -1,4 +1,4 @@
-const { generateRandomCode } = require("../utility");
+const { generateRandomCode, shuffleArray } = require("../utility");
 const { getTrackAudioSample } = require("../web/apis/deezerAPI");
 const { getLyricsForSong } = require("../web/apis/lyricsAPI");
 const Player = require("./Player");
@@ -6,6 +6,15 @@ const Question = require("./type-definitions/Question");
 const gameSocket = require("../web/sockets").game;
 
 class GameServer {
+    /**
+     * Reduce chances of getting repeats or hearing the same song too soon?
+     */
+    #USE_UNIQUE_QUESTIONS = true;
+    /**
+     * Array of isrc ids to identify songs that have been played.
+     */
+    #playedSongIDS = [];
+
     /**
      * 
      * @param { string } name - Server name. 
@@ -83,6 +92,8 @@ class GameServer {
         }
     }
 
+    #nextQuestion = null;
+
     /**
      * The game "tick" that will be sent to lobbies every 100ms.
      */
@@ -110,10 +121,18 @@ class GameServer {
                 // If there is current question, add it to the previous questions array before getting a new one.
                 if (this.state.currentQuestion) this.state.previousQuestions.push(this.state.currentQuestion);
 
-                this.state.currentQuestion = this.newQuestion();
-            }
+                // Load next question aswell so it can load while current question plays.
+                this.state.currentQuestion = (this.#nextQuestion) ? this.#nextQuestion : this.newQuestion();
+                this.#nextQuestion = this.newQuestion();
 
-            // TODO: Add another check for if each player has answered the question - if so, go to next question.
+                // Reset the question's expire time - since we make the next question before it, it will need the time reset.
+                this.resetQuestionTime(this.state.currentQuestion);
+
+                // Skip question if the song is invalid.
+                if (this.state.currentQuestion.chosenSong.invalid) {
+                    this.state.currentQuestion.expiresAt = -1;
+                }
+            }
         }
 
         // Ask the socket server to relay information to the players, since we cannot do that here (We're technically a client too).  
@@ -129,6 +148,18 @@ class GameServer {
     startGame = () => {
         this.state.started = true;
         this.state.currentQuestion = this.newQuestion();
+    }
+
+    /**
+     * Reset the question time.
+     * 
+     * @param { Object } question
+     */
+    resetQuestionTime(question) {
+        const expireDate = new Date();
+        expireDate.setMilliseconds(expireDate.getMilliseconds() + this.state.settings.questionTime);
+
+        question.expiresAt = expireDate.getTime();
     }
 
     /**
@@ -156,7 +187,8 @@ class GameServer {
                 "answer": null,
                 "lyrics": [],
                 "randomLyric": null,
-                "audioSampleURL": null
+                "audioSampleURL": null,
+                "invalid": false
             },
             "expiresAt": questionExpiryDate.getTime(),
             "expiryTime": this.state.settings.questionTime || 60000,
@@ -165,8 +197,13 @@ class GameServer {
 
         // Choose song.
 
-        // Copy songs into new array for this method.
-        const availableSongs = this.songs.slice();
+        // Copy songs into new array for this method. If use unique questions is enabled, then filter out songs that have been played.
+        const totalSongLength = this.songs.length;
+        const availableSongs = (this.#USE_UNIQUE_QUESTIONS) ? this.songs.slice().filter(s => !this.#playedSongIDS.includes(s.external_ids?.isrc)) : this.songs.slice();
+
+        if (availableSongs.length <= 0) {
+            throw new Error("No more available songs!");
+        }
 
         // Pick a random song to be the answer.
         const chosenSongIndex = Math.floor(Math.random() * availableSongs.length);
@@ -205,6 +242,11 @@ class GameServer {
             case "audio":
                 getTrackAudioSample(chosenSong.external_ids?.isrc).then(url => {
                     obj.chosenSong.audioSampleURL = url;
+                    
+                    if (!url) {
+                        obj.chosenSong.invalid = true;
+                    }
+
                     this.broadcastState();
                 });
                 break;
@@ -235,6 +277,25 @@ class GameServer {
 
             // Once again, delete the chosen song so it cannot be chosen again.
             availableSongs.splice(randomSongIndex, 1);
+        }
+
+        // Add song to array of played songs - only allow on playlists with more than 8 songs.
+        if (this.#USE_UNIQUE_QUESTIONS && totalSongLength > 8) {
+            // TODO: When getting close to total amount of songs, free up space at the start - i.e. initial songs will re-enter circulation.
+            // Alternatively, shuffle then take some out so the order is not predictable.
+            this.#playedSongIDS.push(chosenSong.external_ids?.isrc);
+
+            // Remove first 20% of played songs (if we have reached that far).
+            console.log("Played songs", this.#playedSongIDS.length);
+            console.log("Total song length", totalSongLength*0.8);
+            if (this.#playedSongIDS.length >= totalSongLength*0.8) {
+                console.log("Stripping played songs");
+
+                // Shuffle then slice so it's not just the first played songs that can be played again - less predictable.
+                shuffleArray(this.#playedSongIDS);
+                const newArr = this.#playedSongIDS.slice(-(Math.floor(totalSongLength*0.8)));
+                this.#playedSongIDS = newArr;
+            }
         }
 
         return obj;

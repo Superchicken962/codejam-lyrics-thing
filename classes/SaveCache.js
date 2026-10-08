@@ -13,7 +13,6 @@ class SaveCache {
     constructor(filePath) {
         this.#filePath = filePath;
         this.#constructAndRead();
-        console.log("CACHE", this.#cache);
     }
 
     /**
@@ -59,15 +58,20 @@ class SaveCache {
      * 
      * @param { String } key 
      * @param { any } value 
+     * @param { Number } expiresAfter - Minutes after which the cache should expire, or become "invalid" as it does not just remove it at this time but marks as expired.
      */
-    set(key, value) {
+    set(key, value, expiresAfter = 60) {
         const now = new Date().toISOString();
         const createdAt = this.#cache[key]?.createdAt || now;
+
+        const expiryDate = (expiresAfter) ? new Date() : null;
+        if (expiresAfter) expiryDate.setMinutes(expiryDate.getMinutes() + expiresAfter);
 
         this.#cache[key] = {
             value,
             lastUpdated: now,
-            createdAt
+            createdAt,
+            expiresAt: expiryDate ? expiryDate.toISOString() : null
         }
 
         this.#save();
