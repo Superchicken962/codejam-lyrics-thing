@@ -42,6 +42,23 @@ class SaveCache {
     }
 
     /**
+     * Check if a value has been set at a given key, and if it is still valid (not expired).
+     * 
+     * @param { String } key 
+     * @returns { Boolean }
+     */
+    existsAndValid(key) {
+        const data = this.#cache[key];
+        if (!data) return false;
+
+        const expiry = new Date(data.expiresAt);
+        const now = new Date();
+
+        // Returns true if expiry time has not passed yet.
+        return (now < expiry);
+    }
+
+    /**
      * Get value stored at key.
      * 
      * @param { String } key

@@ -23,7 +23,7 @@ const cache = new SaveCache(path.join(__dirname, "../../data/audioCache.json"));
  */
 async function getTrackAudioSample(isrc) {
     // Check if it exists in cache.
-    if (cache.exists(isrc)) {
+    if (cache.existsAndValid(isrc)) {
         return cache.getValue(isrc).sampleURL;
     }
 
