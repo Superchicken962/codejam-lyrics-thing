@@ -43,6 +43,7 @@ createServerForm.addEventListener("submit", async function(ev) {
     }
 
     const gameMode = createServerForm.querySelector("#game_mode .option.selected")?.getAttribute("data-value") || "audio";
+    const questionType = createServerForm.querySelector("#question_type .option.selected")?.getAttribute("data-value") || "multiple_choice";
 
     // Make the POST request since there were no errors.
     const headers = {"Content-type": "application/json"};
@@ -52,7 +53,8 @@ createServerForm.addEventListener("submit", async function(ev) {
         "maxPlayers": maxPlayers,
         "playlistUrl": spotifyFormValues.playlistUrl,
         "questionLength": (parseInt(questionLength) || 60)*1000,
-        "gameMode": gameMode
+        "gameMode": gameMode,
+        "questionType": questionType
     };
 
     const requestCreation = await fetch("/play/multiplayer/new", {"method": "POST", headers, body: JSON.stringify(body)});

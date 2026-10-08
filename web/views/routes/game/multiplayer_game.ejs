@@ -64,7 +64,9 @@
     const SERVER_CODE = "<%= server.code%>";
     const CURRENT_USER_ID = "<%= session.user?.account?.id %>";
     const GAME_MODE = "<%= server.gameMode %>";
+    const ALL_SONGS = JSON.parse(`<%- JSON.stringify(server.songs.map(s => encodeURIComponent(s.name))) %>`).map(s => decodeURIComponent(s));
 </script>
 <script src="/js/AudioManager.js"></script>
+<script src="/js/pages/game/QuestionAnswerFormat"></script>
 <script src="/js/pages/game/multiplayerGame" type="module"></script>
 </html>

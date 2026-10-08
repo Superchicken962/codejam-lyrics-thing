@@ -29,8 +29,9 @@ class GameServer {
      * @param { number } questionLength - Time (in miliseconds) that each question should stay for.
      * @param { boolean } isPrivate - Should server be private? (Hidden from server browser).
      * @param { "lyrics" | "audio" } gameMode - Game mode for the server.
+     * @param { "multiple_choice", "text" } questionType - Type to use for answering questions.
      */
-    constructor(name, description, maxPlayers = 2, ownerInfo, playlistInfo, questionLength = 60000, isPrivate = false, gameMode = "audio") {
+    constructor(name, description, maxPlayers = 2, ownerInfo, playlistInfo, questionLength = 60000, isPrivate = false, gameMode = "audio", questionType = "multiple_choice") {
         this.name = name;
         this.description = description;
         this.maxPlayers = maxPlayers;
@@ -50,7 +51,8 @@ class GameServer {
             players: this.players,
             settings: {
                 maxPlayers: this.maxPlayers,
-                questionTime: questionLength
+                questionTime: questionLength,
+                questionType: questionType || "multiple_choice"
             },
             scores: this.scores,
             ownerId: ownerInfo.id || null,
@@ -66,8 +68,6 @@ class GameServer {
 
         this.owner = ownerInfo;
         this.startBroadcast();
-
-        // TODO: Possibly allow user to select the time per question.
     }
 
     /**

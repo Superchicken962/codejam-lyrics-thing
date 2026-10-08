@@ -46,8 +46,14 @@ let currentQuestionId = "";
 let tryingToPlayAudio = false;
 
 const audio = (GAME_MODE == "audio") ? new AudioManager() : null;
+/** @type { QuestionAnswerFormat }  */
+let questionAnswers = null;
 
 function updateGame(status) {
+    if (!questionAnswers) {
+        setQuestionType(status.state.settings.questionType);
+    }
+
     const elements = {
         previousQuestions: document.querySelector(".previous_questions .questions"),
         leaderboard: document.querySelector(".leaderboard .positions"),
@@ -226,38 +232,12 @@ function updateGame(status) {
         if (question.id === currentQuestionId) return;
         currentQuestionId = question.id;
 
-        newQuestion(question);
+        onNewQuestion(question);
 
         elements.quiz.messages.innerHTML = "";
         elements.quiz.messages.hide();
 
-        elements.quiz.questions.innerHTML = `
-            <a class="question" id="A">
-                <span class="song_name">${question.answers["A"].songName}</span><br>
-                <span class="song_artist">${question.answers["A"].artistName}</span>
-            </a>
-            <a class="question" id="B">
-                <span class="song_name">${question.answers["B"].songName}</span><br>
-                <span class="song_artist">${question.answers["B"].artistName}</span>
-            </a>
-
-            <br>
-
-            <a class="question" id="C">
-                <span class="song_name">${question.answers["C"].songName}</span><br>
-                <span class="song_artist">${question.answers["C"].artistName}</span>
-            </a>
-            <a class="question" id="D">
-                <span class="song_name">${question.answers["D"].songName}</span><br>
-                <span class="song_artist">${question.answers["D"].artistName}</span>
-            </a>
-        `;
-
-        for (const questionBtn of elements.quiz.questions.querySelectorAll("a.question")) {
-            questionBtn.addEventListener("click", function() {
-                guessAnswer(this.id);
-            });
-        }
+        questionAnswers.showAnswers(question.answers, guessAnswer);
 
     } else {
         elements.quiz.questions.innerHTML = "";
@@ -278,7 +258,7 @@ function guessAnswer(answer) {
     });
 }
 
-function newQuestion() {
+function onNewQuestion() {
     // Handle gamemode specific things upon new question - i.e. pause audio.
     switch (GAME_MODE) {
         case "audio":
@@ -286,3 +266,24 @@ function newQuestion() {
             break;
     }
 }
+
+function setQuestionType(type) {
+    const container = document.querySelector(".quiz .questions");
+
+    switch(type.toLowerCase()) {
+        case "multiple_choice":
+            questionAnswers = new MultipleChoiceQuestion(container);
+            break;
+
+        case "text":
+            questionAnswers = new TextEntryQuestion(container);
+            break;
+    }
+}
+
+// document.addEventListener("keydown", (ev) => {
+//     const key = ev.key.toUpperCase();
+//     if (!["A", "B", "C", "D"].includes(key)) return;
+
+//     document.querySelector(`.question#${key}`)?.click();
+// });
