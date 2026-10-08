@@ -89,7 +89,7 @@ function updateGame(status) {
 
         let answerResult = `<i class="fa fa-xmark"></i>`;
         let answer = "incorrect";
-        let guessedAnswer = `<br><span class="guessedAnswer">You Guessed: ${question.answers[playerSelectedAnswer?.answer]?.songName}</span>`;
+        let guessedAnswer = `<br><span class="guessedAnswer">You Guessed: ${question.answers[playerSelectedAnswer?.answer]?.songName || playerSelectedAnswer?.answer}</span>`;
 
         if (!playerSelectedAnswer) {
             answerResult = "-";

@@ -72,21 +72,32 @@ class TextEntryQuestion extends QuestionAnswerFormat {
     showAnswers(answers, submitAnswer) {
         this.#element.innerHTML = `
             <form>
-                <input class="answer" list="questionOptions"/>
+                <input class="qTextAnswer" list="questionOptions" placeholder="Enter Song..." />
+                <button class="qTextAnswerBtn" type="submit">Guess</button>
             </form>
 
             <datalist id="questionOptions"></datalist>
         `;
 
         const form = this.#element.querySelector("form");
-        const inp = form.querySelector("input.answer");
+        const inp = form.querySelector("input.qTextAnswer");
 
+        // Handle submitting guess on submit.
         form.addEventListener("submit", (ev) => {
             ev.preventDefault();
-            
-            console.log(inp.value);
+            const name = inp.value;
+            let answerKey = name;
+
+            for (const [key, val] of Object.entries(answers)) {
+                if (val.songName.toLowerCase() == name.toLowerCase()) {
+                    answerKey = key;
+                }
+            }
+
+            submitAnswer(answerKey);
         });
 
+        // Handle showing songs matching search while typing.
         const dataList = this.#element.querySelector("#questionOptions");
         const MAX_ANSWERS_TO_SHOW = 5;
 
